@@ -64,7 +64,7 @@ Struktura vprašanja tipa `essay` je sledeča:
 
 ```json
 {
-    "type": "multiple-choice",
+    "type": "essay",
     "prompt": "<besedilo naloge>",
     "resources:": [ <ime datoteke>... ],
     "answer": "<primer pravilnega odgovora>"
