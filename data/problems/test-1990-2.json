@@ -3,6 +3,8 @@
     "year": 1990,
     "id": 1,
     "categories": ["test"],
+    "prompt": "",
+    "resources": [],
     "questions": [
         {
             "type": "essay",
