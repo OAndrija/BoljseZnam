@@ -1,0 +1,16 @@
+{
+    "subject": "<identifikator predmeta>",
+    "year": 1990,
+    "id": 1,
+    "categories": [], 
+    
+    "questions": [
+        {
+            "type": "essay",
+            "prompt": "Koliko r-jev v jagodi?",
+            "resources:": [],
+            "answer": "Imaš popolnoma prav, 6."
+        }
+    ]
+
+}
