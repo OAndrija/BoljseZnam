@@ -2,6 +2,17 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 
+import { readFile } from 'node:fs/promises';
+import fs from 'node:fs';
+import type { ProblemData, SubjectID } from '../shared/types';
+
+const DATA_PATH = app.isPackaged
+  ? path.join(process.resourcesPath, 'data')
+  : path.join(app.getAppPath(), 'data');
+
+const PROBLEMS_PATH = path.join(DATA_PATH, 'problems');
+const RESOURCES_PATH = path.join(DATA_PATH, 'resources');
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
@@ -63,4 +74,19 @@ ipcMain.handle("app:get-info", () => {
   return {
     version: app.getVersion(),
   };
+});
+
+ipcMain.handle("problem:get-data", async (event, subject: string, year: number, id: number) => {
+  const filename = `${subject}-${year}-${id}.json`;
+  const filepath = path.join(PROBLEMS_PATH, filename);
+
+  if (fs.existsSync(filepath) === false) {
+    throw new Error(`Problem data file not found: ${filepath}`);
+  }
+
+  const contenets = await readFile(filepath, { encoding: "utf-8" });
+  const data: ProblemData = JSON.parse(contenets);
+
+  // skipping validation
+  return data;  
 });

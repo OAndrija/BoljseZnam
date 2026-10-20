@@ -1,0 +1,21 @@
+{
+    "subject": "test",
+    "year": 1990,
+    "id": 1,
+    "categories": ["test"],
+    "questions": [
+        {
+            "type": "essay",
+            "prompt": "Katero je glavno mesto Slovenije?",
+            "resources": [],
+            "answer": "Maribor"
+        },
+        {
+            "type": "multiple-choice",
+            "prompt": "Katera je največja reka v Sloveniji?",
+            "resources": [],
+            "choices": ["Sava", "Drava", "Mura", "Soča"],
+            "answer": [0]
+        }
+    ]
+}

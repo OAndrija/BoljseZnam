@@ -3,7 +3,11 @@ export interface AppInfo {
 }
 
 export interface ElectronAPI {
+    // lahko se odstrani, samo za test
     getAppInfo(): Promise<AppInfo>;
+
+    getProblemData(subject: SubjectID, year: number, id: number): Promise<ProblemData>;
+
 }
 
 export type QuestionType = "multiple-choice" | "essay";
@@ -14,6 +18,7 @@ export interface MultipleChoiceQuestion {
     type: "multiple-choice";
     prompt: string;
     resources: string[];
+    "choices": string[];
     answer: number[];
 }
 
@@ -24,12 +29,12 @@ export interface EssayQuestion {
     answer: string;
 }
 
-export type Question = MultipleChoiceQuestion | EssayQuestion;
+export type QuestionData = MultipleChoiceQuestion | EssayQuestion;
 
-export interface Problem {
+export interface ProblemData {
     subject: SubjectID;
     year: number;
     id: number
     categories: CategoryID[];
-    questions: Question[];
+    questions: QuestionData[];
 }
