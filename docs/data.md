@@ -31,6 +31,9 @@ Posamezna datoteka, ki predstavlja nalogo, ima sledečo strukturo:
     "year": <leto>,
     "id": <stevilka naloge>,
 
+    "prompt": "<Besedilo, ki se nanaša na celotno nalogo, v kolikor je sestavljena iz večih delov.>",
+    "resources": [ "<poti do slik, tabel, ki se nanašajo na celotno nalogo>"...] 
+
     // kategorije še niso določene, predvidoma glede na poglavje, kamor vprašanje spada
     "categories": [ <kategorija>... ], 
     // če je vprašanj več se predpostavi označevanje z zaporednimi črkami abecede, torej a), b), c)...

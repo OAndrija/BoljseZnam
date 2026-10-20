@@ -34,7 +34,9 @@ export type QuestionData = MultipleChoiceQuestion | EssayQuestion;
 export interface ProblemData {
     subject: SubjectID;
     year: number;
-    id: number
+    id: number;
+    prompt: string;
+    resources: string[];
     categories: CategoryID[];
     questions: QuestionData[];
 }
