@@ -16,5 +16,12 @@ import './index.css';
 
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import type { ElectronAPI } from "./shared/types";
 
 createRoot(document.getElementById("root")!).render(<App />);
+
+declare global {
+  interface Window {
+    api: ElectronAPI;
+  }
+}
