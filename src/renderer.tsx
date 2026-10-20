@@ -15,7 +15,7 @@
 import './index.css';
 
 import { createRoot } from "react-dom/client";
-import App from "./App";
+import App from "./renderer/App";
 import type { ElectronAPI } from "./shared/types";
 
 createRoot(document.getElementById("root")!).render(<App />);

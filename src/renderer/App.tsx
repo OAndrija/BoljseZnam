@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { AppInfo } from "./shared/types";
+import type { AppInfo } from "../shared/types";
 
 export default function App() {
     const [appInfo, setAppInfo] = useState<AppInfo | null>(null);
