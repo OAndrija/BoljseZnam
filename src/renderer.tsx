@@ -14,6 +14,7 @@
 
 import './index.css';
 
-console.log(
-  '👋 This message is being logged by the renderer process, included via Vite',
-);
+import { createRoot } from "react-dom/client";
+import App from "./App";
+
+createRoot(document.getElementById("root")!).render(<App />);
