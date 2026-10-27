@@ -1,0 +1,35 @@
+/* Design tokens from Figma ("Bolje Znam – skica frontend") */
+:root {
+  --primarna: #7c3aed;
+  --primarna-svetla: #f1eafe;
+  --na-primarni: #ffffff;
+  --xp: #8b5cf6;
+
+  --stranska: #2e1065;
+  --stranska-aktivna: #4c1d95;
+  --stranska-kartica: #3b1f7a;
+  --stranska-besedilo: #cfc4ea;
+
+  --ozadje: #f7f5fc;
+  --povrsina: #ffffff;
+  --rob: #e6e1f2;
+  --besedilo: #0f172a;
+  --besedilo-sivo: #64748b;
+
+  --uspeh: #15803d;
+  --uspeh-svetla: #e6f6ec;
+  --napaka: #dc2626;
+  --napaka-svetla: #fdecec;
+
+  --niz: #f97316;
+  --niz-temna: #c2410c;
+  --niz-svetla: #ffedd5;
+
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --sidebar-width: 247px;
+
+  --font-sans:
+    'Inter Variable', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}

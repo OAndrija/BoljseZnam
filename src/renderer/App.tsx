@@ -1,28 +1,35 @@
-import { useEffect, useState } from "react";
-import type { AppInfo } from "../shared/types";
-import Problem from "./components/Problem";
-import type { ProblemData } from "../shared/types";
+import { HashRouter, Route, Routes } from 'react-router';
+import AppLayout from './layout/AppLayout';
+import PlaceholderPage from './pages/PlaceholderPage';
+import ProblemPage from './pages/ProblemPage';
 
 export default function App() {
-    const [appInfo, setAppInfo] = useState<AppInfo | null>(null);
-    const [problem, setProblem] = useState<ProblemData | null>(null);
-
-    useEffect(() => {
-        window.api.getAppInfo().then((info) => {
-            setAppInfo(info);
-        });
-
-        window.api.getProblemData("test", 1990, 2).then((data) => {
-            setProblem(data);
-        });
-    }, []);
-
-    return (
-        <main>
-            <h1>BoljseZnam</h1>
-            <p>Application is running.</p>
-            {appInfo && <p>Version: {appInfo.version}</p>}
-            {problem && <Problem problem={problem}></Problem>}
-        </main>
-    );
+  return (
+    <HashRouter>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route index element={<PlaceholderPage title="Domov" />} />
+          <Route
+            path="poglavja"
+            element={<PlaceholderPage title="Po poglavjih" />}
+          />
+          <Route path="npz" element={<PlaceholderPage title="Celoten NPZ" />} />
+          <Route
+            path="spojine"
+            element={<PlaceholderPage title="Poimenuj spojine" />}
+          />
+          <Route
+            path="reakcije"
+            element={<PlaceholderPage title="Urejanje reakcij" />}
+          />
+          <Route
+            path="zgodovina"
+            element={<PlaceholderPage title="Zgodovina" />}
+          />
+          <Route path="dosezki" element={<PlaceholderPage title="Dosežki" />} />
+          <Route path="naloga" element={<ProblemPage />} />
+        </Route>
+      </Routes>
+    </HashRouter>
+  );
 }

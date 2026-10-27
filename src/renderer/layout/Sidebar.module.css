@@ -1,0 +1,88 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  height: 100%;
+  padding: 16px;
+  overflow-y: auto;
+  background: var(--stranska);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0 16px 8px;
+}
+
+.logoMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: var(--primarna);
+  color: var(--na-primarni);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.logoText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.appName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--na-primarni);
+}
+
+.tagline {
+  font-size: 12px;
+  color: var(--stranska-besedilo);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--stranska-besedilo);
+  text-decoration: none;
+}
+
+.navItem:hover {
+  background: var(--stranska-kartica);
+}
+
+.navItem.active {
+  background: var(--stranska-aktivna);
+  font-weight: 600;
+  color: var(--na-primarni);
+}
+
+.spacer {
+  flex: 1;
+  min-height: 16px;
+}
+
+.footnote {
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--stranska-besedilo);
+}
