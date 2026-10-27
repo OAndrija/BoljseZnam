@@ -2,6 +2,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   padding: 12px 20px;
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
@@ -11,8 +12,13 @@
   transition: filter 0.15s;
 }
 
-.button:hover {
+.button:hover:not(:disabled) {
   filter: brightness(0.96);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .primary {
@@ -24,6 +30,26 @@
   background: var(--povrsina);
   border-color: var(--rob);
   color: var(--besedilo);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--besedilo-sivo);
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--primarna-svetla);
+  filter: none;
+}
+
+.success {
+  background: var(--uspeh);
+  color: var(--na-primarni);
+}
+
+.danger {
+  background: var(--napaka);
+  color: var(--na-primarni);
 }
 
 .fullWidth {

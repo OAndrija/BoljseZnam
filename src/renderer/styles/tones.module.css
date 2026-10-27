@@ -1,0 +1,25 @@
+/* Shared colour tones used by badges, icon tiles and mode cards */
+.primary {
+  --tone-bg: var(--primarna-svetla);
+  --tone-fg: var(--primarna);
+}
+
+.success {
+  --tone-bg: var(--uspeh-svetla);
+  --tone-fg: var(--uspeh);
+}
+
+.error {
+  --tone-bg: var(--napaka-svetla);
+  --tone-fg: var(--napaka);
+}
+
+.streak {
+  --tone-bg: var(--niz-svetla);
+  --tone-fg: var(--niz-temna);
+}
+
+.neutral {
+  --tone-bg: var(--ozadje);
+  --tone-fg: var(--besedilo-sivo);
+}

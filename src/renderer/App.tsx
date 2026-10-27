@@ -1,5 +1,6 @@
 import { HashRouter, Route, Routes } from 'react-router';
 import AppLayout from './layout/AppLayout';
+import ComponentsPreview from './pages/ComponentsPreview';
 import PlaceholderPage from './pages/PlaceholderPage';
 import ProblemPage from './pages/ProblemPage';
 
@@ -28,6 +29,7 @@ export default function App() {
           />
           <Route path="dosezki" element={<PlaceholderPage title="Dosežki" />} />
           <Route path="naloga" element={<ProblemPage />} />
+          <Route path="komponente" element={<ComponentsPreview />} />
         </Route>
       </Routes>
     </HashRouter>

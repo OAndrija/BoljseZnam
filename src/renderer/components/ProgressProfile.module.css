@@ -40,19 +40,6 @@
   color: var(--na-primarni);
 }
 
-.bar {
-  height: 6px;
-  border-radius: 3px;
-  overflow: hidden;
-  background: var(--stranska);
-}
-
-.fill {
-  height: 100%;
-  border-radius: 3px;
-  background: var(--xp);
-}
-
 .next {
   font-size: 11px;
   color: var(--stranska-besedilo);
