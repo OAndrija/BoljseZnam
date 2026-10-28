@@ -1,0 +1,18 @@
+.card {
+  padding: 21px;
+  border: 1px solid var(--rob);
+  border-radius: var(--radius-lg);
+  background: var(--povrsina);
+}
+
+.interactive {
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.interactive:hover {
+  border-color: var(--primarna);
+  box-shadow: 0 4px 16px rgb(124 58 237 / 0.08);
+}

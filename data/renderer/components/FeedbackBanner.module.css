@@ -1,0 +1,33 @@
+.banner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 17px;
+  border: 1px solid var(--tone-fg);
+  border-radius: var(--radius-md);
+  background: var(--tone-bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tone-fg);
+}
+
+.rewards {
+  display: flex;
+  gap: 8px;
+}
+
+.body {
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--besedilo);
+}

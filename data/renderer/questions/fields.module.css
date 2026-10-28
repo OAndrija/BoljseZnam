@@ -1,0 +1,47 @@
+/* Shared input styles ("Polje" in Figma) */
+.field {
+  height: 48px;
+  padding: 0 15px;
+  border: 1px solid var(--rob);
+  border-radius: var(--radius-sm);
+  background: var(--povrsina);
+  color: var(--besedilo);
+  font: inherit;
+  font-size: 16px;
+}
+
+.field:focus,
+.textarea:focus {
+  outline: 2px solid var(--primarna);
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+.field:disabled,
+.textarea:disabled {
+  background: var(--ozadje);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 14px 15px;
+  border: 1px solid var(--rob);
+  border-radius: var(--radius-sm);
+  background: var(--povrsina);
+  color: var(--besedilo);
+  font: inherit;
+  font-size: 15px;
+  line-height: 22px;
+  resize: vertical;
+}
+
+.correctField {
+  border-color: var(--uspeh);
+  background: var(--uspeh-svetla);
+}
+
+.wrongField {
+  border-color: var(--napaka);
+  background: var(--napaka-svetla);
+}

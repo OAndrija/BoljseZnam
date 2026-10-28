@@ -1,0 +1,46 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--stranska-kartica);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.streak {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--na-primarni);
+}
+
+.muted {
+  font-size: 12px;
+  color: var(--stranska-besedilo);
+}
+
+.xp {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--na-primarni);
+}
+
+.level {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--na-primarni);
+}
+
+.next {
+  font-size: 11px;
+  color: var(--stranska-besedilo);
+}

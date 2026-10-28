@@ -1,0 +1,65 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 953px;
+  min-height: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.title {
+  margin-right: auto;
+  font-size: 24px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sharedPrompt {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 25px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.scratch {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 25px;
+}
+
+.scratchLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--besedilo-sivo);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.message {
+  color: var(--besedilo-sivo);
+}
