@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { PartyPopper, Sparkles, ThumbsUp } from 'lucide-react';
 import Button from '../components/Button';
@@ -40,10 +40,33 @@ export default function ResultPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const catalog = useCatalog();
-  const { outcomes } = useResults();
+  const { outcomes, saveHistory } = useResults();
+  const [entryId] = useState(() => crypto.randomUUID());
 
   // the set is finished, so there's nothing to continue on the home screen
   useEffect(clearLastPosition, []);
+
+  // a finished whole exam gets its own row in "Zgodovina"
+  const examYear = searchParams.get('npz');
+  useEffect(() => {
+    if (!catalog || !examYear) return;
+    const problems = practiceSetFrom(searchParams, catalog).problems;
+    const correct = problems.filter(
+      (problem) => outcomes.get(problemKey(problem)) === 'correct',
+    ).length;
+    saveHistory({
+      id: entryId,
+      date: new Date(),
+      kind: 'npz',
+      title: `NPZ ${examYear} (celoten)`,
+      chapter: null,
+      typeLabel: 'Celoten NPZ',
+      result: 'exam',
+      detail: `${correct}/${problems.length} pravilnih`,
+    });
+    // only once, when the result screen opens
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [catalog]);
 
   if (!catalog) return null;
 

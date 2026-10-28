@@ -1,0 +1,52 @@
+.structure {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  padding: 8px 0;
+}
+
+.structureRow {
+  display: flex;
+}
+
+.atom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 32px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.bond {
+  color: var(--besedilo-sivo);
+  font-weight: 400;
+}
+
+.formula {
+  align-self: center;
+}
+
+.answer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 25px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--besedilo-sivo);
+}
+
+.answerRow {
+  display: flex;
+  gap: 12px;
+}
+
+.input {
+  width: 400px;
+  max-width: 100%;
+}

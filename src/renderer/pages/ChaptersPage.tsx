@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { FlaskConical } from 'lucide-react';
 import type { QuestionType } from '../../shared/types';
 import Card from '../components/Card';
+import FilterChips, { type FilterOption } from '../components/FilterChips';
 import ProgressBar from '../components/ProgressBar';
 import { problemKey, useCatalog } from '../hooks/useCatalog';
 import { useResults } from '../progress/ResultsContext';
@@ -12,11 +13,12 @@ import { hasQuestionType } from './practiceSet';
 import list from './listPages.module.css';
 import styles from './ChaptersPage.module.css';
 
-const typeFilters: (QuestionType | null)[] = [
-  null,
-  'multiple-choice',
-  'numeric',
-  'essay',
+const typeFilters: FilterOption<QuestionType | null>[] = [
+  { value: null, label: 'Vse' },
+  ...(['multiple-choice', 'numeric', 'essay'] as const).map((type) => ({
+    value: type,
+    label: questionTypeLabels[type],
+  })),
 ];
 
 export default function ChaptersPage() {
@@ -68,20 +70,12 @@ export default function ChaptersPage() {
         />
       </header>
 
-      <div className={styles.filter} role="group" aria-label="Vrsta naloge">
-        <span className={styles.filterLabel}>Vrsta naloge:</span>
-        {typeFilters.map((filter) => (
-          <button
-            key={filter ?? 'all'}
-            type="button"
-            className={`${styles.chip} ${type === filter ? styles.chipActive : ''}`}
-            aria-pressed={type === filter}
-            onClick={() => setType(filter)}
-          >
-            {filter ? questionTypeLabels[filter] : 'Vse'}
-          </button>
-        ))}
-      </div>
+      <FilterChips
+        label="Vrsta naloge"
+        options={typeFilters}
+        value={type}
+        onChange={setType}
+      />
 
       {catalog && chapters.length === 0 && (
         <p className={list.empty}>Ni poglavij, ki bi ustrezala iskanju.</p>

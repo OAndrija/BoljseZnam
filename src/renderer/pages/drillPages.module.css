@@ -1,0 +1,65 @@
+/* Shared layout for the "Poimenuj spojino" and "Uredi reakcijo" drills */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 953px;
+  min-height: 100%;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--besedilo-sivo);
+}
+
+.task {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 25px;
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+}
+
+.muted {
+  font-size: 14px;
+  color: var(--besedilo-sivo);
+}
+
+.hint {
+  align-self: flex-start;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--primarna-svetla);
+  color: var(--primarna);
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.spacer {
+  flex: 1;
+}

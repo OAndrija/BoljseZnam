@@ -12,6 +12,8 @@ export interface PracticeSet {
   problems: ProblemSummary[];
   /** E.g. the chapter name or "NPZ 2023". */
   title: string;
+  /** Chapter name when practising one chapter, otherwise null. */
+  chapterName: string | null;
   breadcrumb: BreadcrumbItem[];
   /** Where to go when leaving the set. */
   exitPath: string;
@@ -42,6 +44,7 @@ export function practiceSetFrom(
         problem.categories.includes(chapterId),
       ),
       title,
+      chapterName: title,
       breadcrumb: [
         { label: 'Po poglavjih', to: '/poglavja' },
         { label: title },
@@ -56,6 +59,7 @@ export function practiceSetFrom(
     return {
       problems: problems.filter((problem) => String(problem.year) === examYear),
       title,
+      chapterName: null,
       breadcrumb: [{ label: 'Celoten NPZ', to: '/npz' }, { label: title }],
       exitPath: '/npz',
     };
@@ -64,6 +68,7 @@ export function practiceSetFrom(
   return {
     problems,
     title: 'Vse naloge',
+    chapterName: null,
     breadcrumb: [{ label: 'Domov', to: '/' }, { label: 'Vse naloge' }],
     exitPath: '/',
   };

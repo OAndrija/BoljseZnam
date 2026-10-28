@@ -1,0 +1,34 @@
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.label {
+  margin-right: 4px;
+  font-size: 13px;
+  color: var(--besedilo-sivo);
+}
+
+.chip {
+  height: 27px;
+  padding: 0 13px;
+  border: 1px solid var(--rob);
+  border-radius: 999px;
+  background: var(--povrsina);
+  color: var(--besedilo);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--primarna);
+}
+
+.active {
+  border-color: var(--primarna);
+  background: var(--primarna);
+  color: var(--na-primarni);
+}

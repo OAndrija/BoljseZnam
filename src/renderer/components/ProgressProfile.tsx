@@ -1,6 +1,5 @@
 import streakIcon from '../assets/icons/streak.svg';
 import xpIcon from '../assets/icons/xp.svg';
-import ProgressBar from './ProgressBar';
 import styles from './ProgressProfile.module.css';
 
 export interface ProgressProfileProps {
@@ -33,11 +32,12 @@ export default function ProgressProfile({
         </span>
       </div>
       <p className={styles.level}>{levelLabel}</p>
-      <ProgressBar
-        value={levelProgress}
-        variant="dark"
-        label="Napredek do naslednje stopnje"
-      />
+      <div className={styles.bar}>
+        <div
+          className={styles.fill}
+          style={{ width: `${Math.round(levelProgress * 100)}%` }}
+        />
+      </div>
       <p className={styles.next}>
         še {xpToNextLevel} XP do stopnje {nextLevel}
       </p>

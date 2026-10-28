@@ -8,8 +8,6 @@ import type { ElectronAPI } from "./shared/types";
 const api: ElectronAPI = {
     getAppInfo: () => ipcRenderer.invoke("app:get-info"),
     getProblemData: (subject, year, id) => ipcRenderer.invoke("problem:get-data", subject, year, id),
-    listProblems: () => ipcRenderer.invoke("problems:list"),
-    listCategories: () => ipcRenderer.invoke("categories:list"),
 };
 
 contextBridge.exposeInMainWorld("api", api);

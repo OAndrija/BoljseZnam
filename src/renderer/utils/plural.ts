@@ -26,3 +26,14 @@ export const chapters = (count: number) =>
 
 export const exams = (count: number) =>
   plural(count, ['preizkus', 'preizkusa', 'preizkusi', 'preizkusov']);
+
+export const atoms = (count: number) =>
+  plural(count, ['atom', 'atoma', 'atomi', 'atomov']);
+
+/** "34 pravilnih" */
+export const correctAnswers = (count: number) =>
+  plural(count, ['pravilna', 'pravilni', 'pravilne', 'pravilnih']);
+
+/** "3 pravilne zapored" */
+export const correctInRow = (count: number) =>
+  `${plural(count, ['pravilna', 'pravilni', 'pravilne', 'pravilnih'])} zapored`;

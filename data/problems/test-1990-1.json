@@ -1,15 +1,15 @@
 {
-    "subject": "test",
+    "subject": "<identifikator predmeta>",
     "year": 1990,
     "id": 1,
-    "categories": ["test"],
+    "categories": [], 
     "prompt": "",
     "resources": [],
     "questions": [
         {
             "type": "essay",
             "prompt": "Koliko r-jev v jagodi?",
-            "resources": [],
+            "resources:": [],
             "answer": "Imaš popolnoma prav, 6."
         }
     ]
