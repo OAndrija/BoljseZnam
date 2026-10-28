@@ -2,7 +2,8 @@ import type { ButtonHTMLAttributes } from 'react';
 import styles from './Button.module.css';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary';
+  /** Figma "Gumb": Primarni, Sekundarni, Tihi, Potrdi odgovor, Zavrni odgovor */
+  variant?: 'primary' | 'secondary' | 'ghost' | 'success' | 'danger';
   fullWidth?: boolean;
 };
 
