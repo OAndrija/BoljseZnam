@@ -1,0 +1,22 @@
+{
+    "subject": "test",
+    "year": 1990,
+    "id": 4,
+    "categories": ["test", "mnozina-snovi"],
+    "prompt": "",
+    "resources": [],
+    "questions": [
+        {
+            "type": "numeric",
+            "prompt": "Koliko gramov natrijevega klorida potrebuješ za pripravo 250 g raztopine z masnim deležem NaCl 4 %?",
+            "resources": [],
+            "label": "m(NaCl)",
+            "answer": 10,
+            "unit": "g",
+            "units": ["g", "mg", "kg"],
+            "tolerance": 0.05,
+            "hint": "masni delež w = m(topljenec) / m(raztopina)",
+            "explanation": "m(NaCl) = 0,04 · 250 g = 10 g."
+        }
+    ]
+}

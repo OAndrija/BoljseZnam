@@ -1,0 +1,40 @@
+/* Shared layout for the chapter and exam selection screens */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 953px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--besedilo-sivo);
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.muted {
+  font-size: 13px;
+  color: var(--besedilo-sivo);
+}
+
+.empty {
+  color: var(--besedilo-sivo);
+}

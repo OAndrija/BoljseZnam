@@ -8,6 +8,7 @@
   border: 1px solid transparent;
   font-size: 15px;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
   transition: filter 0.15s;
 }

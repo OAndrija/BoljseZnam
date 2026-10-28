@@ -3,6 +3,7 @@ import Button from '../components/Button';
 import ProgressProfile from '../components/ProgressProfile';
 import navDot from '../assets/icons/nav-dot.svg';
 import navDotActive from '../assets/icons/nav-dot-active.svg';
+import { useProgress } from '../progress/useProgress';
 import styles from './Sidebar.module.css';
 
 const navItems = [
@@ -15,21 +16,13 @@ const navItems = [
   { to: '/dosezki', label: 'Dosežki' },
 ];
 
-// TODO: replace with real progress once user data is persisted (phase 5)
-const placeholderProgress = {
-  streakDays: 5,
-  xp: 320,
-  levelLabel: 'Stopnja 4 · Laborant',
-  levelProgress: 0.64,
-  xpToNextLevel: 180,
-  nextLevel: 5,
-};
-
 export default function Sidebar({
   onOpenPeriodicTable,
 }: {
   onOpenPeriodicTable?: () => void;
 }) {
+  const progress = useProgress();
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logo}>
@@ -40,7 +33,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      <ProgressProfile {...placeholderProgress} />
+      <ProgressProfile {...progress} />
 
       <nav className={styles.nav}>
         {navItems.map((item) => (

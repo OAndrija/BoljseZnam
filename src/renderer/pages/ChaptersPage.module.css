@@ -1,0 +1,113 @@
+.search {
+  width: 260px;
+  height: 44px;
+  padding: 0 15px;
+  border: 1px solid var(--rob);
+  border-radius: var(--radius-sm);
+  background: var(--povrsina);
+  color: var(--besedilo);
+  font: inherit;
+  font-size: 14px;
+}
+
+.search:focus {
+  outline: 2px solid var(--primarna);
+  outline-offset: -1px;
+}
+
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterLabel {
+  margin-right: 4px;
+  font-size: 13px;
+  color: var(--besedilo-sivo);
+}
+
+.chip {
+  height: 27px;
+  padding: 0 13px;
+  border: 1px solid var(--rob);
+  border-radius: 999px;
+  background: var(--povrsina);
+  color: var(--besedilo);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--primarna);
+}
+
+.chipActive {
+  border-color: var(--primarna);
+  background: var(--primarna);
+  color: var(--na-primarni);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.chapter {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 200px;
+}
+
+.chapterIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--primarna-svetla);
+  color: var(--primarna);
+}
+
+.chapterName {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.chapterFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.chapterStats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--besedilo-sivo);
+}
+
+.start {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primarna);
+}
+
+@media (max-width: 1150px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

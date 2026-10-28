@@ -1,0 +1,23 @@
+{
+    "subject": "test",
+    "year": 1990,
+    "id": 3,
+    "categories": ["test", "kisline-baze-soli"],
+    "prompt": "",
+    "resources": [],
+    "questions": [
+        {
+            "type": "multiple-choice",
+            "prompt": "Katera od naštetih raztopin ima pH vrednost manjšo od 7?",
+            "resources": ["test-ph-lestvica.svg"],
+            "choices": [
+                "Raztopina sode bikarbone",
+                "Kis",
+                "Destilirana voda",
+                "Milnica"
+            ],
+            "answer": [1],
+            "explanation": "Kis je kisla raztopina, zato je njen pH manjši od 7."
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+{
+    "subject": "test",
+    "year": 1990,
+    "id": 5,
+    "categories": ["test", "kemijske-reakcije"],
+    "prompt": "",
+    "resources": [],
+    "questions": [
+        {
+            "type": "essay",
+            "prompt": "Pojasni, zakaj železen žebelj na vlažnem zraku zarjavi hitreje kot na suhem zraku.",
+            "resources": [],
+            "answer": "Za rjavenje železa sta potrebna kisik in voda. Na vlažnem zraku je prisotna voda, zato reakcija poteka hitreje."
+        }
+    ]
+}

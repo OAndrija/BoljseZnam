@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="70" viewBox="0 0 420 70" font-family="sans-serif" font-size="12">
+  <defs>
+    <linearGradient id="ph" x1="0" x2="1">
+      <stop offset="0" stop-color="#dc2626"/>
+      <stop offset="0.5" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="400" height="24" rx="6" fill="url(#ph)"/>
+  <text x="10" y="52">0</text>
+  <text x="205" y="52" text-anchor="middle">7</text>
+  <text x="410" y="52" text-anchor="end">14</text>
+  <text x="60" y="64" text-anchor="middle">kislo</text>
+  <text x="205" y="64" text-anchor="middle">nevtralno</text>
+  <text x="360" y="64" text-anchor="middle">bazično</text>
+</svg>

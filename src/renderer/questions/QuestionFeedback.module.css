@@ -1,0 +1,16 @@
+.selfCheck {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.note {
+  font-size: 13px;
+  color: var(--besedilo-sivo);
+}
+
+.grading {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}

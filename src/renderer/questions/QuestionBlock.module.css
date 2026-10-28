@@ -1,0 +1,22 @@
+.question {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 25px;
+}
+
+.prompt {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+}
+
+.letter {
+  margin-right: 6px;
+  color: var(--primarna);
+}
+
+.instruction {
+  font-size: 13px;
+  color: var(--besedilo-sivo);
+}

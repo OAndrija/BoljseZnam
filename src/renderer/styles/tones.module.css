@@ -20,6 +20,6 @@
 }
 
 .neutral {
-  --tone-bg: var(--ozadje);
+  --tone-bg: var(--rob);
   --tone-fg: var(--besedilo-sivo);
 }
