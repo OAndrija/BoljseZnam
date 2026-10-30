@@ -1,9 +1,11 @@
+// TODO to se po moje ne rabi
 export type ElementCategory =
   | 'kovina'
   | 'polkovina'
   | 'nekovina'
   | 'zlahtni-plin';
 
+// TODO to zamenja class Atom
 export interface ChemicalElement {
   number: number;
   symbol: string;
@@ -201,4 +203,44 @@ export const categoryLabels: Record<ElementCategory, string> = {
 export function formatMass(element: ChemicalElement): string {
   const value = String(element.mass).replace('.', ',');
   return element.stable ? value : `[${value}]`;
+}
+
+// probably move this to a separate file later
+
+export class Bond {
+    src: number
+    dst: number;
+    type: 'single' | 'double' | 'triple';
+    constructor(src: number, dst: number, type: 'single' | 'double' | 'triple') {
+        this.src = src;
+        this.dst = dst;
+        this.type = type;
+    }
+};
+
+export class Compound {
+    atoms: Number[]; // atomic numbers
+    bonds: Bond[];
+    constructor(atoms: Number[], bonds: Bond[]) {
+        this.atoms = atoms;
+        this.bonds = bonds;
+    }
+}
+
+export function getCompoundName(compound: Compound): String {
+  // placeholder
+  return "metan";
+}
+
+export function generateCompound(): Compound {
+  // placeholder
+  return new Compound(
+    [6, 1, 1, 1, 1],
+    [
+      new Bond(0, 1, 'single'),
+      new Bond(0, 2, 'single'), 
+      new Bond(0, 3, 'single'), 
+      new Bond(0, 4, 'single')
+    ]
+  );
 }

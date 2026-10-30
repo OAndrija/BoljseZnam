@@ -1,3 +1,5 @@
+// this whole file should be removed
+
 export interface Compound {
   /** Official IUPAC name, shown as the solution. */
   name: string;
