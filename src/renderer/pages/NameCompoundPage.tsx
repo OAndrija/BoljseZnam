@@ -4,8 +4,8 @@ import Badge from '../components/Badge';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import FeedbackBanner from '../components/FeedbackBanner';
-import { type Compound, compounds, isCorrectName } from '../data/compounds';
-import { useShuffledDeck } from '../hooks/useShuffledDeck';
+import { isCorrectName } from '../nameCompound/answer';
+import { type CompoundTask as Task, createTask } from '../nameCompound/task';
 import { XP_CORRECT } from '../progress/results';
 import { useResults } from '../progress/ResultsContext';
 import fields from '../questions/fields.module.css';
@@ -16,7 +16,7 @@ import styles from './NameCompoundPage.module.css';
 
 type Outcome = 'correct' | 'wrong' | 'revealed';
 
-const BONDS = '–|=‖≡';
+const BONDS = '–|=‖≡⦀';
 
 function StructuralFormula({ rows }: { rows: string[] }) {
   return (
@@ -39,17 +39,22 @@ function StructuralFormula({ rows }: { rows: string[] }) {
 
 /** "07 Poimenuj organsko spojino" */
 export default function NameCompoundPage() {
-  const { current, next } = useShuffledDeck(compounds);
+  const [task, setTask] = useState(() => createTask());
+  // the same compound can come again later, so the name is not a stable key
+  const [round, setRound] = useState(0);
   const [streak, setStreak] = useState(0);
 
   return (
     <CompoundTask
       // fresh answer and feedback for every compound
-      key={current.name}
-      compound={current}
+      key={round}
+      compound={task}
       streak={streak}
       onResult={(correct) => setStreak(correct ? streak + 1 : 0)}
-      onNext={next}
+      onNext={() => {
+        setTask(createTask(task));
+        setRound(round + 1);
+      }}
     />
   );
 }
@@ -60,7 +65,7 @@ function CompoundTask({
   onResult,
   onNext,
 }: {
-  compound: Compound;
+  compound: Task;
   streak: number;
   onResult: (correct: boolean) => void;
   onNext: () => void;
@@ -85,7 +90,7 @@ function CompoundTask({
   };
 
   const check = () => {
-    finish(isCorrectName(compound, answer) ? 'correct' : 'wrong');
+    finish(isCorrectName(compound.name, answer) ? 'correct' : 'wrong');
   };
 
   return (
@@ -109,7 +114,6 @@ function CompoundTask({
       <Card className={drill.task}>
         <div className={drill.badges}>
           <Badge>{compound.group}</Badge>
-          <Badge tone="neutral">Težavnost: {compound.difficulty}</Badge>
         </div>
         <StructuralFormula rows={compound.structure} />
         <p className={`${drill.muted} ${styles.formula}`}>
