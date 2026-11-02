@@ -227,20 +227,235 @@ export class Compound {
     }
 }
 
-export function getCompoundName(compound: Compound): String {
-  // placeholder
-  return "metan";
+const alkaneStems = [
+  '', 'met', 'et', 'prop', 'but', 'pent', 'heks', 'hept', 'okt', 'non',
+  'dek', 'undek', 'dodek', 'tridek', 'tetradek',
+];
+const multiplicativePrefixes = ['', '', 'di', 'tri', 'tetra'];
+type NamedBranch = { position: number; name: string };
+type ChainCandidate = { chain: number[]; branches: NamedBranch[] };
+
+function compareChains(a: ChainCandidate, b: ChainCandidate): number {
+  if (a.chain.length !== b.chain.length) return b.chain.length - a.chain.length;
+  if (a.branches.length !== b.branches.length) return b.branches.length - a.branches.length;
+  const aPositions = a.branches.map((branch) => branch.position).sort((x, y) => x - y);
+  const bPositions = b.branches.map((branch) => branch.position).sort((x, y) => x - y);
+  for (let i = 0; i < aPositions.length; i++) {
+    if (aPositions[i] !== bPositions[i]) return aPositions[i] - bPositions[i];
+  }
+  return formatBranches(a.branches).localeCompare(formatBranches(b.branches), 'sl');
+}
+
+export function getCompoundName(compound: Compound): string {
+  const carbons = compound.atoms
+    .map((atomicNumber, index) => Number(atomicNumber) === 6 ? index : -1)
+    .filter((index) => index !== -1);
+  if (carbons.length === 0) throw new Error('Spojina nima ogljikovih atomov.');
+
+  const neighbors: number[][] = compound.atoms.map(() => []);
+  for (const bond of compound.bonds) {
+    if (Number(compound.atoms[bond.src]) !== 6 || Number(compound.atoms[bond.dst]) !== 6) continue;
+    if (bond.type !== 'single') throw new Error('Poimenovanje večkratnih vezi še ni podprto.');
+    neighbors[bond.src].push(bond.dst);
+    neighbors[bond.dst].push(bond.src);
+  }
+
+  // A substituent starts at its point of attachment; its numbering starts there.
+  const branchName = (start: number, parent: number): string => {
+    const paths: number[][] = [];
+    const visit = (path: number[]) => {
+      const next = neighbors[path[path.length - 1]].filter(
+        (atom) => atom !== parent && !path.includes(atom),
+      );
+      if (next.length === 0) paths.push(path);
+      for (const atom of next) visit([...path, atom]);
+    };
+    visit([start]);
+    const candidates = paths.map((chain) => {
+      const onChain = new Set(chain);
+      const branches = chain.flatMap((atom, index) =>
+        neighbors[atom]
+          .filter((neighbor) => neighbor !== parent && !onChain.has(neighbor))
+          .map((neighbor) => ({ position: index + 1, name: branchName(neighbor, atom) })),
+      );
+      return { chain, branches };
+    });
+    const { chain, branches } = candidates.sort(compareChains)[0];
+    const stem = alkaneStems[chain.length];
+    if (!stem) throw new Error('Ogljikovodik ima predolgo verigo.');
+    return branches.length === 0 ? `${stem}il` : `(${formatBranches(branches)}${stem}il)`;
+  };
+
+  const candidates: ChainCandidate[] = [];
+  const visit = (path: number[]) => {
+    const onChain = new Set(path);
+    const branches = path.flatMap((atom, index) =>
+      neighbors[atom]
+        .filter((neighbor) => !onChain.has(neighbor))
+        .map((neighbor) => ({ position: index + 1, name: branchName(neighbor, atom) })),
+    );
+    candidates.push({ chain: path, branches });
+    for (const atom of neighbors[path[path.length - 1]]) {
+      if (!onChain.has(atom)) visit([...path, atom]);
+    }
+  };
+  for (const carbon of carbons) visit([carbon]);
+
+  candidates.sort(compareChains);
+  const { chain, branches } = candidates[0];
+  const stem = alkaneStems[chain.length];
+  if (!stem) throw new Error('Ogljikovodik ima predolgo verigo.');
+  return `${formatBranches(branches)}${stem}an`;
+}
+
+function formatBranches(branches: NamedBranch[]): string {
+  const groups = new Map<string, number[]>();
+  for (const { position, name } of branches) {
+    groups.set(name, [...(groups.get(name) ?? []), position]);
+  }
+  return [...groups]
+    .sort(([a], [b]) => a.localeCompare(b, 'sl'))
+    .map(([name, positions]) => {
+      positions.sort((a, b) => a - b);
+      const prefix = multiplicativePrefixes[positions.length] ?? `${positions.length}-`;
+      return `${positions.join(',')}-${prefix}${name}`;
+    })
+    .join('-');
+}
+
+type HydrocarbonGenerationSettings = {
+  minMainChainLength: number;
+  maxMainChainLength: number;
+
+  minBranchCount: number;
+  maxBranchCount: number;
+
+  minBranchLength: number;
+  maxBranchLength: number;
+};
+
+export function generateHydrocarbon(settings: HydrocarbonGenerationSettings): Compound {
+  // the idea here is that we first create the graph of the carbon skeleton as an adjacency list
+  // then we convert the graph into a Compound object
+  // then we add hydrogens so that each carbon has 4 bonds
+  // limitations:
+  // - the main chain is not guaranteed to actually be of length specified in settings
+  // - the number of branches may be less than specified in settings
+
+  // first we construct the carbon skeleton
+  class edge {
+    to: number;
+    type: 'single' | 'double' | 'triple'
+    constructor(to: number, type: 'single' | 'double' | 'triple') {
+      this.to = to;
+      this.type = type;
+    }
+  }
+  const adjacencyList = new Array<Array<edge>>();
+  
+  const mainChainLength = Math.floor(Math.random() * (settings.maxMainChainLength - settings.minMainChainLength + 1)) + settings.minMainChainLength;
+
+  for (let i = 0; i < mainChainLength; i++) {
+    adjacencyList.push([]);
+  }
+
+  // add main chain edges
+  for (let i = 0; i < mainChainLength - 1; i++) {
+    adjacencyList[i].push(new edge(i + 1, 'single'));
+    adjacencyList[i + 1].push(new edge(i, 'single'));
+  }
+
+  // add branches
+  const branchCount = Math.min(
+    Math.floor(Math.random() * (settings.maxBranchCount - settings.minBranchCount + 1)) + settings.minBranchCount,
+    mainChainLength * 2,
+  );
+  const branchLengths = [];
+  for (let i = 0; i < branchCount; i++) {
+    const branchLength = Math.floor(Math.random() * (settings.maxBranchLength - settings.minBranchLength + 1)) + settings.minBranchLength;
+    branchLengths.push(branchLength);
+  }
+  const availableBranchPositions = Array.from(
+    { length: mainChainLength },
+    (_, position) => [position, position],
+  ).flat();
+  const branchPositions = [];
+  for (let i = 0; i < branchCount; i++) {
+    const index = Math.floor(Math.random() * availableBranchPositions.length);
+    branchPositions.push(availableBranchPositions.splice(index, 1)[0]);
+  }
+
+  // add branches to the adjacency list
+  for (let i = 0; i < branchCount; i++) {
+    const branchStart = adjacencyList.length;
+    const branchLength = branchLengths[i];
+
+    for (let j = 0; j < branchLength; j++) {
+      adjacencyList.push([]);
+      if (j === 0) {
+        adjacencyList[branchPositions[i]].push(new edge(branchStart, 'single'));
+        adjacencyList[branchStart].push(new edge(branchPositions[i], 'single'));
+      } else {
+        adjacencyList[branchStart + j - 1].push(new edge(branchStart + j, 'single'));
+        adjacencyList[branchStart + j].push(new edge(branchStart + j - 1, 'single'));
+      }
+    }
+  }
+
+  // create the Compound object
+  const carbons = new Array(adjacencyList.length).fill(6);
+  const hyydrogens = new Array(adjacencyList.length * 2 + 2).fill(1);
+  const atoms = carbons.concat(hyydrogens);
+  const bonds = [];
+  let hydrogenIndex = 0;
+
+  // C-C bonds
+  for (let i = 0; i < adjacencyList.length; i++) {
+    for (let j = 0; j < adjacencyList[i].length; j++) {
+      let src = i;
+      let dst = adjacencyList[i][j].to;
+      if (src > dst) {
+        continue; // skip duplicate edges
+      }
+      bonds.push(new Bond(src, dst, adjacencyList[i][j].type));
+    }
+  }
+  // C-H bonds
+  for (let i = 0; i < adjacencyList.length; i++) {
+    const carbonValence = adjacencyList[i].length;
+    const hydrogenCount = 4 - carbonValence;
+    for (let j = 0; j < hydrogenCount; j++) {
+      let src = i;
+      let dst = adjacencyList.length + hydrogenIndex;
+      if (src > dst) {
+        continue; // skip duplicate edges
+      }
+      bonds.push(new Bond(src, dst, 'single'));
+      hydrogenIndex++;
+    }
+  }
+
+  return new Compound(atoms, bonds);
 }
 
 export function generateCompound(): Compound {
   // placeholder
-  return new Compound(
-    [6, 1, 1, 1, 1],
-    [
-      new Bond(0, 1, 'single'),
-      new Bond(0, 2, 'single'), 
-      new Bond(0, 3, 'single'), 
-      new Bond(0, 4, 'single')
-    ]
-  );
+  // return new Compound(
+  //   [6, 1, 1, 1, 1],
+  //   [
+  //     new Bond(0, 1, 'single'),
+  //     new Bond(0, 2, 'single'), 
+  //     new Bond(0, 3, 'single'), 
+  //     new Bond(0, 4, 'single')
+  //   ]
+  // );
+
+  return generateHydrocarbon({
+    minMainChainLength: 1,
+    maxMainChainLength: 5,
+    minBranchCount: 0,
+    maxBranchCount: 3,
+    minBranchLength: 1,
+    maxBranchLength: 3
+  });
 }
