@@ -15,6 +15,14 @@ import type {
 } from '../shared/types';
 import { openUserDatabase } from './userData';
 
+// Keep Electron tests away from the normal profile, including SQLite and localStorage.
+const testUserData = process.env.BOLJSEZNAM_TEST_USER_DATA_DIR;
+if (process.env.NODE_ENV === 'test' && testUserData) {
+  fs.mkdirSync(testUserData, { recursive: true });
+  app.setPath('userData', testUserData);
+  app.setPath('sessionData', testUserData);
+}
+
 const DATA_PATH = app.isPackaged
   ? path.join(process.resourcesPath, 'data')
   : path.join(app.getAppPath(), 'data');

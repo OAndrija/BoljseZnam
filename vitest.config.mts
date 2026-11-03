@@ -8,6 +8,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov'],
       include: [
+        'src/main/userData.ts',
         'src/renderer/questions/grading.ts',
         'src/renderer/progress/**/*.ts',
         'src/renderer/utils/**/*.ts',

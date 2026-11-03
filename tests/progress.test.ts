@@ -7,6 +7,8 @@ import {
   XP_CORRECT,
 } from '../src/renderer/progress/results';
 import { achievements } from '../src/renderer/progress/achievements';
+import { Compound } from '../src/renderer/data/elements';
+import { equations } from '../src/renderer/data/equations';
 import type { HistoryEntry } from '../src/renderer/progress/ResultsContext';
 import type { Progress } from '../src/renderer/progress/useProgress';
 
@@ -37,10 +39,10 @@ describe('levels', () => {
 });
 
 describe('XP', () => {
-  it('rewards correct answers the most and skipping nothing', () => {
+  it('rewards checked answers while ungraded and skipped tasks earn nothing', () => {
     expect(outcomeXp('correct')).toBe(XP_CORRECT);
     expect(outcomeXp('wrong')).toBe(XP_ATTEMPT);
-    expect(outcomeXp('ungraded')).toBe(XP_ATTEMPT);
+    expect(outcomeXp('ungraded')).toBe(0);
     expect(outcomeXp('skipped')).toBe(0);
     expect(XP_CORRECT).toBeGreaterThan(XP_ATTEMPT);
   });
@@ -69,9 +71,7 @@ describe('problemOutcome', () => {
   });
 
   it('prefers wrong over ungraded', () => {
-    expect(problemOutcome(['wrong', 'self-check'], [null, null])).toBe(
-      'wrong',
-    );
+    expect(problemOutcome(['wrong', 'self-check'], [null, null])).toBe('wrong');
   });
 });
 
@@ -90,15 +90,38 @@ describe('achievements', () => {
   };
 
   let counter = 0;
-  const entry = (overrides: Partial<HistoryEntry> = {}): HistoryEntry => ({
+  const entry = (
+    overrides: Partial<Extract<HistoryEntry, { kind: 'naloga' }>> = {},
+  ): HistoryEntry => ({
     id: String(counter++),
     date: new Date(),
     kind: 'naloga',
-    title: 't',
+    taskKey: 'KEM-2020-1',
     chapter: null,
-    typeLabel: 'x',
     result: 'correct',
     ...overrides,
+  });
+
+  const naming = (
+    result: HistoryEntry['result'] = 'correct',
+  ): HistoryEntry => ({
+    id: String(counter++),
+    date: new Date(),
+    kind: 'poimenovanje',
+    problemData: new Compound([], []),
+    chapter: 'Organske spojine',
+    result,
+  });
+
+  const reaction = (
+    result: HistoryEntry['result'] = 'correct',
+  ): HistoryEntry => ({
+    id: String(counter++),
+    date: new Date(),
+    kind: 'reakcija',
+    problemData: equations[0],
+    chapter: 'Kemijske reakcije',
+    result,
   });
 
   const find = (history: HistoryEntry[], id: string) =>
@@ -113,23 +136,23 @@ describe('achievements', () => {
   it('starts with no progress', () => {
     const list = achievements([], progress);
     expect(find([], 'prvi-korak').progress).toBe(0);
-    expect(list.filter((a) => a.id !== 'vztrajnez' && a.id !== 'kemik').every(
-      (a) => a.progress === 0,
-    )).toBe(true);
+    expect(
+      list
+        .filter((a) => a.id !== 'vztrajnez' && a.id !== 'kemik')
+        .every((a) => a.progress === 0),
+    ).toBe(true);
   });
 
-  it('counts solved problems but not whole exams', () => {
-    const history = [entry(), entry({ kind: 'npz', result: 'exam' })];
-    expect(find(history, 'prvi-korak').progress).toBe(1);
-    expect(find(history, 'maratonec').progress).toBe(1);
+  it('counts each graded question attempt and ignores viewed solutions', () => {
+    const history = [entry(), entry(), entry({ result: 'solution-viewed' })];
+    expect(find(history, 'prvi-korak').progress).toBe(2);
+    expect(
+      achievements(history, progress).some((a) => a.id === 'maratonec'),
+    ).toBe(false);
   });
 
   it('counts correct compounds and reactions separately', () => {
-    const history = [
-      entry({ kind: 'spojina' }),
-      entry({ kind: 'spojina', result: 'wrong' }),
-      entry({ kind: 'reakcija' }),
-    ];
+    const history = [naming(), naming('wrong'), reaction()];
     expect(find(history, 'poimenovalec').progress).toBe(1);
     expect(find(history, 'ravnovesje').progress).toBe(1);
   });
@@ -154,13 +177,9 @@ describe('achievements', () => {
     expect(find(history, 'brez-napake').progress).toBe(3);
   });
 
-  it('does not break a run with a whole-exam entry', () => {
-    const history = [
-      entry(),
-      entry({ kind: 'npz', result: 'exam' }),
-      entry(),
-    ];
-    expect(find(history, 'brez-napake').progress).toBe(2);
+  it('breaks a correct run when a solution is viewed', () => {
+    const history = [entry(), entry({ result: 'solution-viewed' }), entry()];
+    expect(find(history, 'brez-napake').progress).toBe(1);
   });
 
   it('takes streak and level from progress', () => {
