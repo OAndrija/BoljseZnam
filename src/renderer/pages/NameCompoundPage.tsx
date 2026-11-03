@@ -1,27 +1,20 @@
 import { type CSSProperties, useState } from 'react';
-import { useNavigate } from 'react-router';
 import { Flame } from 'lucide-react';
 import Badge from '../components/Badge';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import FeedbackBanner from '../components/FeedbackBanner';
-import ProgressBar from '../components/ProgressBar';
 import { isCorrectName } from '../nameCompound/answer';
 import { type CompoundTask as Task, createTask } from '../nameCompound/task';
 import { XP_CORRECT } from '../progress/results';
 import { useResults } from '../progress/ResultsContext';
-import { toneClass } from '../styles/tones';
 import fields from '../questions/fields.module.css';
 import { capitalize } from '../utils/capitalize';
 import { correctInRow } from '../utils/plural';
 import drill from './drillPages.module.css';
 import styles from './NameCompoundPage.module.css';
-import { headline } from './ResultPage';
-import resultStyles from './ResultPage.module.css';
 
 type Outcome = 'correct' | 'wrong' | 'revealed';
-
-const ROUND_SIZE = 10;
 
 const BONDS = '–|=‖≡⦀';
 // lines of a horizontal bond longer than one cell
@@ -64,124 +57,38 @@ function StructuralFormula({ rows }: { rows: string[] }) {
   );
 }
 
-/** "07 Poimenuj organsko spojino": rounds of ROUND_SIZE compounds. */
+/** "07 Poimenuj organsko spojino" */
 export default function NameCompoundPage() {
   const [task, setTask] = useState(() => createTask());
   // the same compound can come again later, so the name is not a stable key
-  const [shown, setShown] = useState(0);
+  const [round, setRound] = useState(0);
   const [streak, setStreak] = useState(0);
-  // outcome of every compound in this round, null when skipped
-  const [round, setRound] = useState<(Outcome | null)[]>([]);
-
-  const next = () => {
-    setTask(createTask(task));
-    setShown(shown + 1);
-  };
-
-  if (round.length === ROUND_SIZE) {
-    return (
-      <RoundSummary
-        outcomes={round}
-        onRestart={() => {
-          setRound([]);
-          next();
-        }}
-      />
-    );
-  }
 
   return (
     <CompoundTask
       // fresh answer and feedback for every compound
-      key={shown}
+      key={round}
       compound={task}
-      position={round.length + 1}
       streak={streak}
       onResult={(correct) => setStreak(correct ? streak + 1 : 0)}
-      onNext={(outcome) => {
-        setRound([...round, outcome]);
-        if (round.length + 1 < ROUND_SIZE) next();
+      onNext={() => {
+        setTask(createTask(task));
+        setRound(round + 1);
       }}
     />
   );
 }
 
-/** "Konec runde": summary after the last compound of a round. */
-function RoundSummary({
-  outcomes,
-  onRestart,
-}: {
-  outcomes: (Outcome | null)[];
-  onRestart: () => void;
-}) {
-  const navigate = useNavigate();
-  const correct = outcomes.filter((outcome) => outcome === 'correct').length;
-  const unanswered = outcomes.filter(
-    (outcome) => outcome === null || outcome === 'revealed',
-  ).length;
-  const share = correct / outcomes.length;
-  const { title, icon, tone } = headline(share);
-
-  return (
-    <div className={resultStyles.wrapper}>
-      <Card className={resultStyles.result}>
-        <div className={`${resultStyles.icon} ${toneClass(tone)}`}>{icon}</div>
-        <h1 className={resultStyles.title}>{title}</h1>
-        <p className={resultStyles.subtitle}>
-          Poimenuj organsko spojino · {outcomes.length} spojin
-        </p>
-
-        <div className={resultStyles.stats}>
-          <div className={resultStyles.stat}>
-            <span className={resultStyles.statValue}>
-              {correct} / {outcomes.length}
-            </span>
-            <span className={resultStyles.statLabel}>pravilnih</span>
-          </div>
-          <div className={resultStyles.stat}>
-            <span className={resultStyles.statValue}>
-              +{correct * XP_CORRECT} XP
-            </span>
-            <span className={resultStyles.statLabel}>zbranih točk</span>
-          </div>
-          <div className={resultStyles.stat}>
-            <span className={resultStyles.statValue}>{unanswered}</span>
-            <span className={resultStyles.statLabel}>brez odgovora</span>
-          </div>
-        </div>
-
-        <div className={resultStyles.score}>
-          <div className={resultStyles.scoreHeader}>
-            <span>Uspešnost</span>
-            <span>{Math.round(share * 100)} %</span>
-          </div>
-          <ProgressBar value={share} height={10} label="Uspešnost" />
-        </div>
-
-        <div className={resultStyles.actions}>
-          <Button variant="secondary" onClick={() => navigate('/')}>
-            Nazaj domov
-          </Button>
-          <Button onClick={onRestart}>Nova runda</Button>
-        </div>
-      </Card>
-    </div>
-  );
-}
-
 function CompoundTask({
   compound,
-  position,
   streak,
   onResult,
   onNext,
 }: {
   compound: Task;
-  /** 1-based place in the round */
-  position: number;
   streak: number;
   onResult: (correct: boolean) => void;
-  onNext: (outcome: Outcome | null) => void;
+  onNext: () => void;
 }) {
   const { saveHistory } = useResults();
   const [answer, setAnswer] = useState('');
@@ -212,8 +119,7 @@ function CompoundTask({
         <div>
           <h1 className={drill.title}>Poimenuj organsko spojino</h1>
           <p className={drill.subtitle}>
-            Zapiši ime spojine po pravilih IUPAC. Spojina {position} od{' '}
-            {ROUND_SIZE}.
+            Zapiši ime spojine po pravilih IUPAC.
           </p>
         </div>
         <Button
@@ -306,15 +212,8 @@ function CompoundTask({
           </Button>
         )}
         <div className={drill.spacer} />
-        <Button
-          variant={outcome ? 'primary' : 'ghost'}
-          onClick={() => onNext(outcome)}
-        >
-          {!outcome
-            ? 'Preskoči'
-            : position === ROUND_SIZE
-              ? 'Zaključi rundo →'
-              : 'Naslednja spojina →'}
+        <Button variant={outcome ? 'primary' : 'ghost'} onClick={onNext}>
+          {outcome ? 'Naslednja spojina →' : 'Preskoči'}
         </Button>
       </div>
     </div>
