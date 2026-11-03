@@ -51,7 +51,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run package
-      # GitHub runners have no display, so run Electron in a virtual one
       - run: xvfb-run -a npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: failure()
