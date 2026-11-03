@@ -3,14 +3,14 @@
   "productName": "BoljseZnam",
   "version": "1.0.0",
   "private": true,
-  "description": "My Electron application description",
+  "description": "Aplikacija za vadbo za nacionalno preverjanje znanja (NPZ) iz kemije",
+  "author": "BoljšeZnam",
   "keywords": [],
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OAndrija/BoljseZnam.git"
   },
-  "author": "",
   "main": ".vite/build/main.cjs",
   "scripts": {
     "start": "electron-forge start",
