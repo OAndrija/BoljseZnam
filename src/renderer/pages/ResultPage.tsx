@@ -13,8 +13,7 @@ import { tasks } from '../utils/plural';
 import { practiceSetFrom } from './practiceSet';
 import styles from './ResultPage.module.css';
 
-/** Title and icon of a result screen by the share of correct answers. */
-export function headline(share: number) {
+function headline(share: number) {
   if (share >= 0.8) {
     return {
       title: 'Odlično opravljeno!',
