@@ -22,7 +22,13 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run lint
+      - name: Lint
+        run: npx oxlint
+
+      - name: Check formatting
+        run: npx oxfmt --check
+        continue-on-error: true
+        
       - run: npm run typecheck
       - run: npm run test:coverage
       - uses: actions/upload-artifact@v4
