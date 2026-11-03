@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { capitalize } from '../src/renderer/utils/capitalize';
-import { correctInRow, plural, tasks } from '../src/renderer/utils/plural';
+import {
+  atoms,
+  chapters,
+  correctAnswers,
+  correctInRow,
+  exams,
+  plural,
+  tasks,
+} from '../src/renderer/utils/plural';
 import {
   isCorrectName,
   normalizeName,
@@ -69,4 +77,34 @@ describe('compound name comparison', () => {
   it('rejects different names', () => {
     expect(isCorrectName('butan', 'pentan')).toBe(false);
   });
+
+  describe('plural helper functions', () => {
+  it('formats chapters', () => {
+    expect(chapters(1)).toBe('1 poglavje');
+    expect(chapters(2)).toBe('2 poglavji');
+    expect(chapters(3)).toBe('3 poglavja');
+    expect(chapters(5)).toBe('5 poglavij');
+  });
+
+  it('formats exams', () => {
+    expect(exams(1)).toBe('1 preizkus');
+    expect(exams(2)).toBe('2 preizkusa');
+    expect(exams(3)).toBe('3 preizkusi');
+    expect(exams(5)).toBe('5 preizkusov');
+  });
+
+  it('formats atoms', () => {
+    expect(atoms(1)).toBe('1 atom');
+    expect(atoms(2)).toBe('2 atoma');
+    expect(atoms(3)).toBe('3 atomi');
+    expect(atoms(5)).toBe('5 atomov');
+  });
+
+  it('formats correct answers', () => {
+    expect(correctAnswers(1)).toBe('1 pravilna');
+    expect(correctAnswers(2)).toBe('2 pravilni');
+    expect(correctAnswers(3)).toBe('3 pravilne');
+    expect(correctAnswers(5)).toBe('5 pravilnih');
+  });
+});
 });
