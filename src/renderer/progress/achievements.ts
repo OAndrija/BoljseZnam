@@ -1,7 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
   Atom,
-  Award,
   Flame,
   FlaskConical,
   Footprints,
@@ -27,7 +26,6 @@ function longestCorrectRun(history: readonly HistoryEntry[]): number {
   let best = 0;
   let run = 0;
   for (const entry of [...history].reverse()) {
-    if (entry.kind === 'npz') continue;
     run = entry.result === 'correct' ? run + 1 : 0;
     best = Math.max(best, run);
   }
@@ -38,7 +36,9 @@ export function achievements(
   history: readonly HistoryEntry[],
   progress: Progress,
 ): Achievement[] {
-  const solved = history.filter((entry) => entry.kind !== 'npz');
+  const solved = history.filter(
+    (entry) => entry.result === 'correct' || entry.result === 'wrong',
+  );
   const correct = (predicate: (entry: HistoryEntry) => boolean) =>
     solved.filter((entry) => entry.result === 'correct' && predicate(entry))
       .length;
@@ -73,7 +73,7 @@ export function achievements(
       name: 'Poimenovalec',
       description: 'Pravilno poimenuj 10 organskih spojin.',
       icon: Atom,
-      progress: correct((entry) => entry.kind === 'spojina'),
+      progress: correct((entry) => entry.kind === 'poimenovanje'),
       target: 10,
     },
     {
@@ -83,14 +83,6 @@ export function achievements(
       icon: Scale,
       progress: correct((entry) => entry.kind === 'reakcija'),
       target: 10,
-    },
-    {
-      id: 'maratonec',
-      name: 'Maratonec',
-      description: 'Reši celoten NPZ od začetka do konca.',
-      icon: Award,
-      progress: history.filter((entry) => entry.kind === 'npz').length,
-      target: 1,
     },
     {
       id: 'brez-napake',

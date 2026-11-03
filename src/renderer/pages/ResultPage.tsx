@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { PartyPopper, Sparkles, ThumbsUp } from 'lucide-react';
 import Button from '../components/Button';
@@ -7,7 +7,11 @@ import ProgressBar from '../components/ProgressBar';
 import { problemKey, useCatalog } from '../hooks/useCatalog';
 import { clearLastPosition } from '../progress/lastPosition';
 import { outcomeXp } from '../progress/results';
-import { useResults } from '../progress/ResultsContext';
+import {
+  practiceDraftKey,
+  type PracticeDraft,
+  useDrafts,
+} from '../progress/drafts';
 import { toneClass } from '../styles/tones';
 import { tasks } from '../utils/plural';
 import { practiceSetFrom } from './practiceSet';
@@ -40,39 +44,18 @@ export default function ResultPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const catalog = useCatalog();
-  const { outcomes, saveHistory } = useResults();
-  const [entryId] = useState(() => crypto.randomUUID());
+  const { drafts, clear } = useDrafts();
+  const draftKey = practiceDraftKey(searchParams.toString());
+  const draft = drafts.get(draftKey) as PracticeDraft | undefined;
 
   // the set is finished, so there's nothing to continue on the home screen
   useEffect(clearLastPosition, []);
 
-  // a finished whole exam gets its own row in "Zgodovina"
-  const examYear = searchParams.get('npz');
-  useEffect(() => {
-    if (!catalog || !examYear) return;
-    const problems = practiceSetFrom(searchParams, catalog).problems;
-    const correct = problems.filter(
-      (problem) => outcomes.get(problemKey(problem)) === 'correct',
-    ).length;
-    saveHistory({
-      id: entryId,
-      date: new Date(),
-      kind: 'npz',
-      title: `NPZ ${examYear} (celoten)`,
-      chapter: null,
-      typeLabel: 'Celoten NPZ',
-      result: 'exam',
-      detail: `${correct}/${problems.length} pravilnih`,
-    });
-    // only once, when the result screen opens
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [catalog]);
-
   if (!catalog) return null;
 
   const practiceSet = practiceSetFrom(searchParams, catalog);
-  const setOutcomes = practiceSet.problems.map((problem) =>
-    outcomes.get(problemKey(problem)),
+  const setOutcomes = practiceSet.problems.map(
+    (problem) => draft?.outcomes[problemKey(problem)],
   );
   const total = practiceSet.problems.length;
   const correct = setOutcomes.filter((outcome) => outcome === 'correct').length;
@@ -123,11 +106,19 @@ export default function ResultPage() {
         <div className={styles.actions}>
           <Button
             variant="secondary"
-            onClick={() => navigate(`/naloga?${searchParams}`)}
+            onClick={() => {
+              clear(draftKey);
+              navigate(`/naloga?${searchParams}`);
+            }}
           >
             Ponovi sklop
           </Button>
-          <Button onClick={() => navigate(practiceSet.exitPath)}>
+          <Button
+            onClick={() => {
+              clear(draftKey);
+              navigate(practiceSet.exitPath);
+            }}
+          >
             {practiceSet.exitPath === '/' ? 'Nazaj domov' : 'Izberi nov sklop'}
           </Button>
         </div>

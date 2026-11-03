@@ -13,16 +13,26 @@ import Card from '../components/Card';
 import ProgressBar from '../components/ProgressBar';
 import { problemKey, problemPath, useCatalog } from '../hooks/useCatalog';
 import {
-  type Answer,
   emptyAnswer,
   grade,
   isAnswered,
   questionTypeLabels,
-  type Result,
 } from '../questions/grading';
 import QuestionBlock from '../questions/QuestionBlock';
+import {
+  createPracticeDraft,
+  practiceDraftKey,
+  type PracticeDraft,
+  type ProblemWork,
+  useDraft,
+  useDrafts,
+} from '../progress/drafts';
 import { saveLastPosition } from '../progress/lastPosition';
-import { type ProblemOutcome, problemOutcome } from '../progress/results';
+import {
+  type ProblemOutcome,
+  outcomeXp,
+  problemOutcome,
+} from '../progress/results';
 import { useResults } from '../progress/ResultsContext';
 import fields from '../questions/fields.module.css';
 import { type PracticeSet, practiceSetFrom } from './practiceSet';
@@ -32,9 +42,19 @@ import styles from './ProblemPage.module.css';
 export function StartPractice() {
   const [searchParams] = useSearchParams();
   const catalog = useCatalog();
+  const { drafts, clear } = useDrafts();
+  const draftKey = practiceDraftKey(searchParams.toString());
+  const draft = drafts.get(draftKey) as PracticeDraft | undefined;
+  useEffect(() => {
+    if (draft?.completed) clear(draftKey);
+  }, [draft?.completed, draftKey, clear]);
+  if (draft?.completed) return null;
   if (!catalog) return null;
 
-  const first = practiceSetFrom(searchParams, catalog).problems[0];
+  const problems = practiceSetFrom(searchParams, catalog).problems;
+  const first =
+    problems.find((problem) => problemKey(problem) === draft?.currentTaskKey) ??
+    problems[0];
   if (!first) {
     return <p className={styles.message}>V tem sklopu še ni nalog.</p>;
   }
@@ -56,7 +76,7 @@ export default function ProblemPage() {
   // key: start with fresh answers whenever the problem changes
   return (
     <ProblemLoader
-      key={problemKey(ref)}
+      key={`${searchParams}:${problemKey(ref)}`}
       {...ref}
       practiceSet={practiceSetFrom(searchParams, catalog)}
       search={searchParams.toString()}
@@ -108,15 +128,32 @@ function ProblemView({
 }) {
   const navigate = useNavigate();
   const { questions } = problem;
+  const key = problemKey(problem);
+  const [draft, setDraft] = useDraft(practiceDraftKey(search), () =>
+    createPracticeDraft(key),
+  );
+  const [work, setWork] = useState<ProblemWork>(
+    () =>
+      draft.problems[key] ?? {
+        attemptId: crypto.randomUUID(),
+        answers: questions.map(emptyAnswer),
+        results: null,
+        selfGrades: questions.map(() => null),
+        scratch: '',
+      },
+  );
+  const { answers, results, selfGrades, scratch } = work;
+  const currentOutcome = results ? problemOutcome(results, selfGrades) : null;
+  const earnedXp = currentOutcome ? outcomeXp(currentOutcome) : 0;
 
-  const [answers, setAnswers] = useState<Answer[]>(() =>
-    questions.map(emptyAnswer),
-  );
-  const [results, setResults] = useState<Result[] | null>(null);
-  const [selfGrades, setSelfGrades] = useState<(boolean | null)[]>(() =>
-    questions.map(() => null),
-  );
-  const [scratch, setScratch] = useState('');
+  const updateWork = (updated: ProblemWork) => {
+    setWork(updated);
+    setDraft((previous) => ({
+      ...previous,
+      currentTaskKey: key,
+      problems: { ...previous.problems, [key]: updated },
+    }));
+  };
 
   const position = practiceSet.problems.findIndex(
     (item) => problemKey(item) === problemKey(problem),
@@ -127,26 +164,26 @@ function ProblemView({
     (type) => questionTypeLabels[type],
   );
 
-  const { record, saveHistory } = useResults();
+  const { saveHistory } = useResults();
   const catalog = useCatalog();
-  const key = problemKey(problem);
-  const [attemptId] = useState(() => crypto.randomUUID());
 
   const saveOutcome = (outcome: ProblemOutcome) => {
-    record(key, outcome);
+    setDraft((previous) => ({
+      ...previous,
+      outcomes: { ...previous.outcomes, [key]: outcome },
+    }));
     if (outcome === 'skipped') return;
     saveHistory({
-      id: attemptId,
+      id: work.attemptId,
       date: new Date(),
       kind: 'naloga',
-      title: `NPZ ${problem.year} · naloga ${problem.id}`,
+      taskKey: key,
       // the chapter being practised, else the problem's first chapter
       chapter:
         practiceSet.chapterName ??
         catalog?.categories.find(({ id }) => problem.categories.includes(id))
           ?.name ??
         null,
-      typeLabel: typeLabels.join(', '),
       result:
         outcome === 'ungraded'
           ? 'solution-viewed'
@@ -158,26 +195,34 @@ function ProblemView({
 
   useEffect(() => {
     if (position < 0) return;
+    if (draft.currentTaskKey !== key) {
+      setDraft((previous) => ({ ...previous, currentTaskKey: key }));
+    }
     saveLastPosition({
       path: `${problemPath(problem)}?${search}`,
       label: `${practiceSet.title} · naloga ${position + 1} od ${total}`,
     });
-  }, [problem, search, practiceSet.title, position, total]);
+  }, [problem, search, practiceSet.title, position, total, key]);
 
   const goNext = () => {
     if (!results) saveOutcome('skipped');
+    setDraft((previous) => ({
+      ...previous,
+      currentTaskKey: next ? problemKey(next) : key,
+      completed: !next,
+    }));
     navigate(next ? `${problemPath(next)}?${search}` : `/rezultat?${search}`);
   };
 
   const check = () => {
     const checked = questions.map((question, i) => grade(question, answers[i]));
-    setResults(checked);
+    updateWork({ ...work, results: checked });
     saveOutcome(problemOutcome(checked, selfGrades));
   };
 
   const selfGrade = (index: number, correct: boolean) => {
     const updated = setAt(selfGrades, index, correct);
-    setSelfGrades(updated);
+    updateWork({ ...work, selfGrades: updated });
     if (results) saveOutcome(problemOutcome(results, updated));
   };
 
@@ -223,7 +268,9 @@ function ProblemView({
           answer={answers[index]}
           result={results?.[index]}
           selfGrade={selfGrades[index]}
-          onAnswer={(answer) => setAnswers(setAt(answers, index, answer))}
+          onAnswer={(answer) =>
+            updateWork({ ...work, answers: setAt(answers, index, answer) })
+          }
           onSelfGrade={(correct) => selfGrade(index, correct)}
         />
       ))}
@@ -237,7 +284,9 @@ function ProblemView({
             id="scratch"
             className={fields.textarea}
             value={scratch}
-            onChange={(event) => setScratch(event.target.value)}
+            onChange={(event) =>
+              updateWork({ ...work, scratch: event.target.value })
+            }
           />
         </Card>
       )}
@@ -249,6 +298,11 @@ function ProblemView({
         >
           Zapusti
         </Button>
+        {earnedXp > 0 && (
+          <Badge tone={currentOutcome === 'correct' ? 'success' : 'error'}>
+            +{earnedXp} XP
+          </Badge>
+        )}
         <div className={styles.spacer} />
         {results ? (
           <Button onClick={goNext}>

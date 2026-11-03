@@ -1,20 +1,25 @@
-import { type CSSProperties, useState } from 'react';
+import { type CSSProperties, useEffect } from 'react';
 import { Flame } from 'lucide-react';
 import Badge from '../components/Badge';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import FeedbackBanner from '../components/FeedbackBanner';
 import { isCorrectName } from '../nameCompound/answer';
-import { type CompoundTask as Task, createTask } from '../nameCompound/task';
+import {
+  createNamingDraft,
+  type NamingDraft,
+  useDraft,
+} from '../progress/drafts';
+import { namingCorrectRun } from '../progress/activity';
+import { saveLastPosition } from '../progress/lastPosition';
 import { XP_CORRECT } from '../progress/results';
 import { useResults } from '../progress/ResultsContext';
 import fields from '../questions/fields.module.css';
-import { capitalize } from '../utils/capitalize';
 import { correctInRow } from '../utils/plural';
 import drill from './drillPages.module.css';
 import styles from './NameCompoundPage.module.css';
 
-type Outcome = 'correct' | 'wrong' | 'revealed';
+type Outcome = NonNullable<NamingDraft['outcome']>;
 
 const BONDS = '–|=‖≡⦀';
 // lines of a horizontal bond longer than one cell
@@ -59,52 +64,44 @@ function StructuralFormula({ rows }: { rows: string[] }) {
 
 /** "07 Poimenuj organsko spojino" */
 export default function NameCompoundPage() {
-  const [task, setTask] = useState(() => createTask());
-  // the same compound can come again later, so the name is not a stable key
-  const [round, setRound] = useState(0);
-  const [streak, setStreak] = useState(0);
+  const [draft, setDraft] = useDraft('poimenovanje', createNamingDraft);
+  const { history } = useResults();
+  useEffect(() => {
+    saveLastPosition({ path: '/spojine', label: 'Poimenovanje spojine' });
+  }, []);
 
   return (
     <CompoundTask
-      // fresh answer and feedback for every compound
-      key={round}
-      compound={task}
-      streak={streak}
-      onResult={(correct) => setStreak(correct ? streak + 1 : 0)}
-      onNext={() => {
-        setTask(createTask(task));
-        setRound(round + 1);
-      }}
+      draft={draft}
+      setDraft={setDraft}
+      streak={namingCorrectRun(history)}
+      onNext={() => setDraft(createNamingDraft(draft.task))}
     />
   );
 }
 
 function CompoundTask({
-  compound,
+  draft,
+  setDraft,
   streak,
-  onResult,
   onNext,
 }: {
-  compound: Task;
+  draft: NamingDraft;
+  setDraft: (draft: NamingDraft) => void;
   streak: number;
-  onResult: (correct: boolean) => void;
   onNext: () => void;
 }) {
   const { saveHistory } = useResults();
-  const [answer, setAnswer] = useState('');
-  const [outcome, setOutcome] = useState<Outcome | null>(null);
-  const [showHint, setShowHint] = useState(false);
+  const { task: compound, answer, outcome, showHint } = draft;
 
   const finish = (result: Outcome) => {
-    setOutcome(result);
-    if (result !== 'revealed') onResult(result === 'correct');
+    setDraft({ ...draft, outcome: result });
     saveHistory({
-      id: crypto.randomUUID(),
+      id: draft.attemptId,
       date: new Date(),
-      kind: 'spojina',
-      title: capitalize(compound.name),
+      kind: 'poimenovanje',
+      problemData: compound.compound,
       chapter: 'Organske spojine',
-      typeLabel: 'Poimenovanje',
       result: result === 'revealed' ? 'solution-viewed' : result,
     });
   };
@@ -125,7 +122,7 @@ function CompoundTask({
         <Button
           variant="secondary"
           disabled={showHint || outcome !== null}
-          onClick={() => setShowHint(true)}
+          onClick={() => setDraft({ ...draft, showHint: true })}
         >
           Pokaži namig
         </Button>
@@ -166,7 +163,9 @@ function CompoundTask({
             spellCheck={false}
             value={answer}
             disabled={outcome !== null}
-            onChange={(event) => setAnswer(event.target.value)}
+            onChange={(event) =>
+              setDraft({ ...draft, answer: event.target.value })
+            }
           />
           {!outcome && (
             <Button type="submit" disabled={!answer.trim()}>
