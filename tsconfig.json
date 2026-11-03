@@ -11,5 +11,5 @@
     "resolveJsonModule": true,
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*", "tests/**/*", "*.ts", "*.mts"]
+  "include": ["src/**/*", "tests/**/*", "e2e/**/*", "*.ts", "*.mts"]
 }

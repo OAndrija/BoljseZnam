@@ -22,7 +22,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test"
   },
   "bugs": {
     "url": "https://github.com/OAndrija/BoljseZnam/issues"
@@ -38,6 +39,7 @@
     "@electron-forge/plugin-fuses": "^8.0.1",
     "@electron-forge/plugin-vite": "^8.0.1",
     "@electron/fuses": "^2.1.3",
+    "@playwright/test": "^1.64.1",
     "@types/electron-squirrel-startup": "^1.0.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

@@ -38,6 +38,29 @@ jobs:
           path: coverage/
           if-no-files-found: ignore
 
+  e2e:
+    name: E2E (Playwright)
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run package
+      # GitHub runners have no display, so run Electron in a virtual one
+      - run: xvfb-run -a npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+
   build:
     name: Build (${{ matrix.os }})
     needs: quality
