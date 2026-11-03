@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import type { Equation } from '../data/equations';
@@ -142,28 +143,82 @@ const DraftsContext = createContext<DraftStore | null>(null);
 
 export function DraftsProvider({ children }: { children: ReactNode }) {
   const [drafts, setDrafts] = useState<Map<string, Draft>>(() => new Map());
+  const current = useRef(drafts);
+  const pending = useRef<Promise<unknown>>(Promise.resolve());
+  const [ready, setReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    window.api
+      .loadProgress()
+      .then(({ drafts: saved }) => {
+        if (!active) return;
+        const loaded = new Map<string, Draft>();
+        for (const row of saved) {
+          if (row.stateVersion !== 1)
+            throw new Error(`Unsupported draft version: ${row.draftKey}`);
+          const draft = JSON.parse(row.stateJson) as Draft;
+          if (draft.kind !== row.kind)
+            throw new Error(`Invalid draft: ${row.draftKey}`);
+          loaded.set(row.draftKey, draft);
+        }
+        current.current = loaded;
+        setDrafts(loaded);
+        setReady(true);
+      })
+      .catch((cause: unknown) =>
+        setError(`Nalaganje osnutkov ni uspelo: ${String(cause)}`),
+      );
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const persist = useCallback((operation: () => Promise<unknown>) => {
+    pending.current = pending.current
+      .then(operation)
+      .catch((cause: unknown) => {
+        setError(`Shranjevanje osnutkov ni uspelo: ${String(cause)}`);
+      });
+  }, []);
+
   const save = useCallback(
     <T extends Draft>(key: string, update: T | ((previous: T) => T)) => {
-      setDrafts((previous) => {
-        const next = new Map(previous);
-        const value =
-          typeof update === 'function'
-            ? (update as (draft: T) => T)(previous.get(key) as T)
-            : update;
-        next.set(key, value);
-        return next;
-      });
+      const value =
+        typeof update === 'function'
+          ? (update as (draft: T) => T)(current.current.get(key) as T)
+          : update;
+      const next = new Map(current.current);
+      next.set(key, value);
+      current.current = next;
+      setDrafts(next);
+      const stateJson = JSON.stringify(value);
+      persist(() =>
+        window.api.saveDraft({
+          draftKey: key,
+          kind: value.kind,
+          stateVersion: 1,
+          stateJson,
+          updatedAtMs: Date.now(),
+        }),
+      );
     },
-    [],
+    [persist],
   );
-  const clear = useCallback((key: string) => {
-    setDrafts((previous) => {
-      const next = new Map(previous);
+  const clear = useCallback(
+    (key: string) => {
+      const next = new Map(current.current);
       next.delete(key);
-      return next;
-    });
-  }, []);
+      current.current = next;
+      setDrafts(next);
+      persist(() => window.api.deleteDraft(key));
+    },
+    [persist],
+  );
   const store = useMemo(() => ({ drafts, save, clear }), [drafts, save, clear]);
+  if (error) return <p role="alert">{error}</p>;
+  if (!ready) return <p>Nalaganje osnutkov…</p>;
   return (
     <DraftsContext.Provider value={store}>{children}</DraftsContext.Provider>
   );
@@ -178,11 +233,16 @@ export function useDrafts(): DraftStore {
 /** The first draft is created once, then retained while pages unmount and remount. */
 export function useDraft<T extends Draft>(key: string, create: () => T) {
   const { drafts, save, clear } = useDrafts();
-  const [initial] = useState(create);
-  const draft = (drafts.get(key) as T | undefined) ?? initial;
+  const initialByKey = useRef(new Map<string, T>());
+  const stored = drafts.get(key) as T | undefined;
+  if (!stored && !initialByKey.current.has(key)) {
+    initialByKey.current.set(key, create());
+  }
+  const initial = initialByKey.current.get(key);
+  const draft = stored ?? initial!;
   useEffect(() => {
-    if (!drafts.has(key)) save(key, initial);
-  }, [drafts, key, initial, save]);
+    if (!stored) save(key, initial!);
+  }, [stored, key, initial, save]);
   const update = useCallback(
     (value: T | ((previous: T) => T)) => save(key, value),
     [key, save],

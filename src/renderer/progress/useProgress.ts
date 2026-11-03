@@ -17,10 +17,8 @@ export interface Progress {
   activeDays: boolean[];
 }
 
-/** Progress calculated from this run's attempts until the database is added. */
 export function useProgress(): Progress {
-  const { history, totalXp } = useResults();
-  const weeklyGoal = 20;
+  const { history, totalXp, weeklyGoal } = useResults();
   const activity = activityProgress(history);
   const { current, next } = levelFor(totalXp);
   return {

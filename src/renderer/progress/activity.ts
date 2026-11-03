@@ -17,7 +17,9 @@ export function activityProgress(
   now = new Date(),
 ) {
   const graded = history.filter(isGraded);
-  const active = new Set(graded.map(({ date }) => localDay(date)));
+  const active = new Set(
+    graded.map((entry) => entry.localDay ?? localDay(entry.date)),
+  );
   const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
   const nextMonday = new Date(monday);
@@ -28,9 +30,12 @@ export function activityProgress(
     day.setDate(day.getDate() + index);
     return active.has(localDay(day));
   });
-  const weeklyDone = graded.filter(
-    ({ date }) => date >= monday && date < nextMonday,
-  ).length;
+  const mondayKey = localDay(monday);
+  const nextMondayKey = localDay(nextMonday);
+  const weeklyDone = graded.filter((entry) => {
+    const day = entry.localDay ?? localDay(entry.date);
+    return day >= mondayKey && day < nextMondayKey;
+  }).length;
 
   const cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   if (!active.has(localDay(cursor))) cursor.setDate(cursor.getDate() - 1);

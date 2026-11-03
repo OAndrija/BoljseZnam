@@ -82,7 +82,7 @@ export default function HistoryPage() {
         <div>
           <h1 className={list.title}>Zgodovina reševanja</h1>
           <p className={list.subtitle}>
-            Zgodovina je trenutno na voljo do zaprtja aplikacije.
+            Tvoji rešeni poskusi ostanejo shranjeni tudi po zaprtju aplikacije.
           </p>
         </div>
         <Button
