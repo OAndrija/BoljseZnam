@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect } from 'react';
 import Badge from '../components/Badge';
 import Button from '../components/Button';
 import Card from '../components/Card';
@@ -7,20 +7,25 @@ import { elementBySymbol } from '../data/elements';
 import {
   type AtomCount,
   countAtoms,
-  type Equation,
-  equations,
   formatEquation,
   isReducible,
 } from '../data/equations';
-import { useShuffledDeck } from '../hooks/useShuffledDeck';
+import {
+  createEquationDraft,
+  currentEquation,
+  nextEquationDraft,
+  type EquationDraft,
+  useDraft,
+} from '../progress/drafts';
 import { XP_CORRECT } from '../progress/results';
+import { saveLastPosition } from '../progress/lastPosition';
 import { useResults } from '../progress/ResultsContext';
 import { capitalize } from '../utils/capitalize';
 import { atoms } from '../utils/plural';
 import drill from './drillPages.module.css';
 import styles from './BalanceEquationPage.module.css';
 
-type Outcome = 'correct' | 'wrong' | 'revealed';
+type Outcome = NonNullable<EquationDraft['outcome']>;
 
 function elementName(symbol: string): string {
   return elementBySymbol.get(symbol)?.name ?? symbol;
@@ -66,29 +71,31 @@ function wrongFeedback(counts: AtomCount[]) {
 
 /** "08 Uredi kemijsko enačbo" */
 export default function BalanceEquationPage() {
-  const { current, next } = useShuffledDeck(equations);
+  const [draft, setDraft] = useDraft('reakcija', createEquationDraft);
+  useEffect(() => {
+    saveLastPosition({ path: '/reakcije', label: 'Urejanje reakcije' });
+  }, []);
   return (
     <EquationTask
-      key={formatEquation(current)}
-      equation={current}
-      onNext={next}
+      draft={draft}
+      setDraft={setDraft}
+      onNext={() => setDraft(nextEquationDraft(draft))}
     />
   );
 }
 
 function EquationTask({
-  equation,
+  draft,
+  setDraft,
   onNext,
 }: {
-  equation: Equation;
+  draft: EquationDraft;
+  setDraft: (draft: EquationDraft) => void;
   onNext: () => void;
 }) {
   const { saveHistory } = useResults();
-  const speciesCount = equation.reactants.length + equation.products.length;
-  const [values, setValues] = useState<string[]>(() =>
-    Array(speciesCount).fill(''),
-  );
-  const [outcome, setOutcome] = useState<Outcome | null>(null);
+  const equation = currentEquation(draft);
+  const { values, outcome } = draft;
 
   const parsed = values.map(parseCoefficient);
   const valid = parsed.every((value) => value !== null);
@@ -98,17 +105,20 @@ function EquationTask({
   const reducible = isReducible(coefficients);
 
   const finish = (result: Outcome) => {
-    setOutcome(result);
-    if (result === 'revealed') {
-      setValues(equation.solution.map((c) => (c === 1 ? '' : String(c))));
-    }
+    setDraft({
+      ...draft,
+      outcome: result,
+      values:
+        result === 'revealed'
+          ? equation.solution.map((c) => (c === 1 ? '' : String(c)))
+          : values,
+    });
     saveHistory({
-      id: crypto.randomUUID(),
+      id: draft.attemptId,
       date: new Date(),
       kind: 'reakcija',
-      title: formatEquation(equation),
+      problemData: equation,
       chapter: 'Kemijske reakcije',
-      typeLabel: 'Urejanje enačbe',
       result: result === 'revealed' ? 'solution-viewed' : result,
     });
   };
@@ -129,11 +139,12 @@ function EquationTask({
       value={values[index]}
       disabled={outcome !== null}
       onChange={(event) =>
-        setValues(
-          values.map((value, i) =>
+        setDraft({
+          ...draft,
+          values: values.map((value, i) =>
             i === index ? event.target.value.replace(/\D/g, '') : value,
           ),
-        )
+        })
       }
     />
   );

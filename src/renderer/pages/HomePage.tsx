@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router';
 import { Atom, Check, FileText, Scale, Trophy } from 'lucide-react';
-import Badge from '../components/Badge';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import ModeCard from '../components/ModeCard';
@@ -99,7 +98,9 @@ export default function HomePage() {
             ))}
           </div>
           <p className={styles.streakNote}>
-            {progress.streakDays} dni zapored – ne prekini niza!
+            {progress.streakDays > 0
+              ? `${progress.streakDays} dni zapored – ne prekini niza!`
+              : 'Začni niz z današnjo vajo.'}
           </p>
         </div>
       </section>
@@ -114,12 +115,10 @@ export default function HomePage() {
             <h2 className={styles.challengeTitle}>
               {tasks(chapterSize)} iz poglavja {chapter.name}
             </h2>
-            {/* TODO: award the double points once XP is saved (phase 5) */}
             <p className={styles.muted}>
-              Reši vse brez napake in dobiš dvojne točke.
+              Vadi današnje poglavje in preveri, koliko nalog že znaš.
             </p>
           </div>
-          <Badge>+100 XP</Badge>
           <Button
             onClick={() =>
               navigate(`/naloga?poglavje=${encodeURIComponent(chapter.id)}`)

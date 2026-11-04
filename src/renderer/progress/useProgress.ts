@@ -1,4 +1,6 @@
 import { type Level, levelFor } from './levels';
+import { activityProgress } from './activity';
+import { useResults } from './ResultsContext';
 
 export interface Progress {
   streakDays: number;
@@ -15,24 +17,20 @@ export interface Progress {
   activeDays: boolean[];
 }
 
-// TODO: replace with real progress once user data is persisted
-const placeholder = {
-  streakDays: 5,
-  xp: 320,
-  weeklyGoal: 20,
-  weeklyDone: 16,
-  activeDays: [true, true, true, true, true, false, false],
-};
-
-/** Streak, XP and weekly goal. Placeholder data until user data is saved. */
 export function useProgress(): Progress {
-  const { current, next } = levelFor(placeholder.xp);
+  const { history, totalXp, weeklyGoal } = useResults();
+  const activity = activityProgress(history);
+  const { current, next } = levelFor(totalXp);
   return {
-    ...placeholder,
+    ...activity,
+    xp: totalXp,
+    weeklyGoal,
     level: current,
     nextLevel: next,
     levelLabel: `Stopnja ${current.number} · ${current.name}`,
-    levelProgress: next ? placeholder.xp / next.minXp : 1,
-    xpToNextLevel: next ? next.minXp - placeholder.xp : 0,
+    levelProgress: next
+      ? (totalXp - current.minXp) / (next.minXp - current.minXp)
+      : 1,
+    xpToNextLevel: next ? next.minXp - totalXp : 0,
   };
 }

@@ -9,8 +9,19 @@ import type {
   Category,
   ProblemData,
   ProblemSummary,
+  StoredDraft,
+  StoredHistory,
   SubjectID,
 } from '../shared/types';
+import { openUserDatabase } from './userData';
+
+// Keep Electron tests away from the normal profile, including SQLite and localStorage.
+const testUserData = process.env.BOLJSEZNAM_TEST_USER_DATA_DIR;
+if (process.env.NODE_ENV === 'test' && testUserData) {
+  fs.mkdirSync(testUserData, { recursive: true });
+  app.setPath('userData', testUserData);
+  app.setPath('sessionData', testUserData);
+}
 
 const DATA_PATH = app.isPackaged
   ? path.join(process.resourcesPath, 'data')
@@ -66,6 +77,24 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  const userDataDirectory = path.join(app.getPath('userData'), 'boljseznam');
+  fs.mkdirSync(userDataDirectory, { recursive: true });
+  const userDatabase = openUserDatabase(
+    path.join(userDataDirectory, 'progress.sqlite'),
+  );
+  ipcMain.handle('progress:load', () => userDatabase.load());
+  ipcMain.handle('history:save', (_event, entry: StoredHistory) =>
+    userDatabase.saveHistory(entry),
+  );
+  ipcMain.handle('history:clear', () => userDatabase.clearHistory());
+  ipcMain.handle('draft:save', (_event, draft: StoredDraft) =>
+    userDatabase.saveDraft(draft),
+  );
+  ipcMain.handle('draft:delete', (_event, key: string) =>
+    userDatabase.deleteDraft(key),
+  );
+  app.on('will-quit', () => userDatabase.close());
+
   protocol.handle(RESOURCE_SCHEME, (request) => {
     const filename = decodeURIComponent(new URL(request.url).pathname);
     const filepath = path.resolve(RESOURCES_PATH, `.${filename}`);
@@ -101,31 +130,34 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
-ipcMain.handle("app:get-info", () => {
+ipcMain.handle('app:get-info', () => {
   return {
     version: app.getVersion(),
   };
 });
 
-ipcMain.handle("problem:get-data", async (event, subject: string, year: number, id: number) => {
-  const filename = `${subject}-${year}-${id}.json`;
-  const filepath = path.join(PROBLEMS_PATH, filename);
+ipcMain.handle(
+  'problem:get-data',
+  async (event, subject: string, year: number, id: number) => {
+    const filename = `${subject}-${year}-${id}.json`;
+    const filepath = path.join(PROBLEMS_PATH, filename);
 
-  if (fs.existsSync(filepath) === false) {
-    throw new Error(`Problem data file not found: ${filepath}`);
-  }
+    if (fs.existsSync(filepath) === false) {
+      throw new Error(`Problem data file not found: ${filepath}`);
+    }
 
-  const contenets = await readFile(filepath, { encoding: "utf-8" });
-  const data: ProblemData = JSON.parse(contenets);
+    const contenets = await readFile(filepath, { encoding: 'utf-8' });
+    const data: ProblemData = JSON.parse(contenets);
 
-  // skipping validation
-  return data;
-});
+    // skipping validation
+    return data;
+  },
+);
 
 // <predmet>-<leto>-<stevilka naloge>.json
 const PROBLEM_FILENAME = /^([A-Za-z]+)-(\d+)-(\d+)\.json$/;
 
-ipcMain.handle("problems:list", async () => {
+ipcMain.handle('problems:list', async () => {
   const filenames = await readdir(PROBLEMS_PATH);
   const summaries: ProblemSummary[] = [];
 
@@ -134,7 +166,9 @@ ipcMain.handle("problems:list", async () => {
     if (!match) continue;
 
     try {
-      const contents = await readFile(path.join(PROBLEMS_PATH, filename), { encoding: "utf-8" });
+      const contents = await readFile(path.join(PROBLEMS_PATH, filename), {
+        encoding: 'utf-8',
+      });
       const data: ProblemData = JSON.parse(contents);
       summaries.push({
         subject: match[1] as SubjectID,
@@ -149,16 +183,17 @@ ipcMain.handle("problems:list", async () => {
   }
 
   return summaries.sort(
-    (a, b) => a.subject.localeCompare(b.subject) || a.year - b.year || a.id - b.id,
+    (a, b) =>
+      a.subject.localeCompare(b.subject) || a.year - b.year || a.id - b.id,
   );
 });
 
-ipcMain.handle("categories:list", async () => {
+ipcMain.handle('categories:list', async () => {
   if (fs.existsSync(CATEGORIES_PATH) === false) {
     return [];
   }
 
-  const contents = await readFile(CATEGORIES_PATH, { encoding: "utf-8" });
+  const contents = await readFile(CATEGORIES_PATH, { encoding: 'utf-8' });
   const categories: Category[] = JSON.parse(contents);
   return categories;
 });

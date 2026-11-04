@@ -1,9 +1,7 @@
 import { Check, X } from 'lucide-react';
 import type { QuestionData } from '../../shared/types';
-import Badge from '../components/Badge';
 import Button from '../components/Button';
 import FeedbackBanner from '../components/FeedbackBanner';
-import { XP_ATTEMPT, XP_CORRECT } from '../progress/results';
 import { type Answer, formatDecimal, letter, type Result } from './grading';
 import styles from './QuestionFeedback.module.css';
 
@@ -44,11 +42,7 @@ export default function QuestionFeedback({
 }) {
   if (result === 'correct') {
     return (
-      <FeedbackBanner
-        kind="success"
-        title="Pravilno! Odlično."
-        rewards={<Badge tone="success">+{XP_CORRECT} XP</Badge>}
-      >
+      <FeedbackBanner kind="success" title="Pravilno! Odlično.">
         {question.explanation}
       </FeedbackBanner>
     );
@@ -56,11 +50,7 @@ export default function QuestionFeedback({
 
   if (result === 'wrong') {
     return (
-      <FeedbackBanner
-        kind="error"
-        title="Ni čisto prav – a zdaj veš, zakaj."
-        rewards={<Badge tone="error">+{XP_ATTEMPT} XP za poskus</Badge>}
-      >
+      <FeedbackBanner kind="error" title="Ni čisto prav – a zdaj veš, zakaj.">
         {wrongAnswerText(question, answer)} {question.explanation}
       </FeedbackBanner>
     );

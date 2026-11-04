@@ -9,14 +9,13 @@ import type { Result } from '../questions/grading';
  */
 export type ProblemOutcome = 'correct' | 'wrong' | 'ungraded' | 'skipped';
 
-// TODO: XP is only shown for now; it's saved once progress is persisted (phase 5)
 export const XP_CORRECT = 10;
 export const XP_ATTEMPT = 2;
 
 export function outcomeXp(outcome: ProblemOutcome): number {
   if (outcome === 'correct') return XP_CORRECT;
-  if (outcome === 'skipped') return 0;
-  return XP_ATTEMPT;
+  if (outcome === 'wrong') return XP_ATTEMPT;
+  return 0;
 }
 
 export function problemOutcome(

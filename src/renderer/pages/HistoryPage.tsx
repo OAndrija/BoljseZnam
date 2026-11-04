@@ -7,6 +7,7 @@ import FilterChips, { type FilterOption } from '../components/FilterChips';
 import {
   type HistoryEntry,
   type HistoryKind,
+  historyTitle,
   useResults,
 } from '../progress/ResultsContext';
 import { correctAnswers, tasks } from '../utils/plural';
@@ -16,8 +17,7 @@ import styles from './HistoryPage.module.css';
 const kindFilters: FilterOption<HistoryKind | null>[] = [
   { value: null, label: 'Vse' },
   { value: 'naloga', label: 'Naloge' },
-  { value: 'npz', label: 'Celotni NPZ' },
-  { value: 'spojina', label: 'Spojine' },
+  { value: 'poimenovanje', label: 'Poimenovanje' },
   { value: 'reakcija', label: 'Reakcije' },
 ];
 
@@ -35,8 +35,6 @@ function ResultBadge({ entry }: { entry: HistoryEntry }) {
       return <Badge tone="error">Napačno</Badge>;
     case 'solution-viewed':
       return <Badge tone="neutral">Ogledana rešitev</Badge>;
-    case 'exam':
-      return <Badge>{entry.detail}</Badge>;
   }
 }
 
@@ -65,15 +63,14 @@ export default function HistoryPage() {
   const { history, clearHistory } = useResults();
   const [kind, setKind] = useState<HistoryKind | null>(null);
 
-  // whole exams are summaries of problems that are already listed
-  const solved = history.filter((entry) => entry.kind !== 'npz');
+  const solved = history.filter(
+    ({ result }) => result === 'correct' || result === 'wrong',
+  );
   const lastWeek = solved.filter(
     (entry) => Date.now() - entry.date.getTime() < WEEK_MS,
   ).length;
   const correct = solved.filter(({ result }) => result === 'correct').length;
-  const graded = solved.filter(
-    ({ result }) => result === 'correct' || result === 'wrong',
-  ).length;
+  const graded = solved.length;
   const weakest = weakestChapter(solved);
   const visible = kind
     ? history.filter((entry) => entry.kind === kind)
@@ -85,7 +82,7 @@ export default function HistoryPage() {
         <div>
           <h1 className={list.title}>Zgodovina reševanja</h1>
           <p className={list.subtitle}>
-            Vse je shranjeno lokalno na tej napravi.
+            Tvoji rešeni poskusi ostanejo shranjeni tudi po zaprtju aplikacije.
           </p>
         </div>
         <Button
@@ -147,7 +144,6 @@ export default function HistoryPage() {
                 <th>Datum</th>
                 <th>Naloga</th>
                 <th>Poglavje</th>
-                <th>Vrsta</th>
                 <th>Rezultat</th>
               </tr>
             </thead>
@@ -155,9 +151,8 @@ export default function HistoryPage() {
               {visible.map((entry) => (
                 <tr key={entry.id}>
                   <td className={styles.date}>{formatDate(entry.date)}</td>
-                  <td>{entry.title}</td>
+                  <td>{historyTitle(entry)}</td>
                   <td>{entry.chapter ?? '—'}</td>
-                  <td>{entry.typeLabel}</td>
                   <td>
                     <ResultBadge entry={entry} />
                   </td>

@@ -3,6 +3,11 @@ import Badge from '../components/Badge';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import { problemKey, problemPath, useCatalog } from '../hooks/useCatalog';
+import {
+  practiceDraftKey,
+  type PracticeDraft,
+  useDrafts,
+} from '../progress/drafts';
 import type { ProblemOutcome } from '../progress/results';
 import { useResults } from '../progress/ResultsContext';
 import { tasks } from '../utils/plural';
@@ -16,15 +21,27 @@ function examPath(year: number) {
 function ExamStatus({
   outcomes,
   total,
+  inProgress,
+  completed,
 }: {
   outcomes: (ProblemOutcome | undefined)[];
   total: number;
+  inProgress: boolean;
+  completed: boolean;
 }) {
   const attempted = outcomes.filter(Boolean).length;
   const correct = outcomes.filter((outcome) => outcome === 'correct').length;
 
-  if (attempted === 0) return <Badge tone="neutral">Nerešeno</Badge>;
-  if (attempted < total) {
+  if (completed) {
+    return (
+      <Badge tone="success">
+        Dokončano · {correct}/{total} pravilnih
+      </Badge>
+    );
+  }
+  if (attempted === 0 && !inProgress)
+    return <Badge tone="neutral">Nerešeno</Badge>;
+  if (inProgress) {
     return (
       <Badge tone="streak">
         V teku · {attempted}/{total}
@@ -33,7 +50,7 @@ function ExamStatus({
   }
   return (
     <Badge tone="success">
-      Dokončano · {correct}/{total} pravilnih
+      Rešeno · {attempted}/{total} · {correct} pravilnih
     </Badge>
   );
 }
@@ -42,6 +59,7 @@ export default function ExamsPage() {
   const navigate = useNavigate();
   const catalog = useCatalog();
   const { outcomes } = useResults();
+  const { drafts } = useDrafts();
 
   // newest exam first
   const years = [...new Set(catalog?.problems.map(({ year }) => year))].sort(
@@ -88,26 +106,40 @@ export default function ExamsPage() {
             const problems = (catalog?.problems ?? []).filter(
               (problem) => problem.year === year,
             );
+            const draft = drafts.get(practiceDraftKey(`npz=${year}`)) as
+              | PracticeDraft
+              | undefined;
             const examOutcomes = problems.map((problem) =>
-              outcomes.get(problemKey(problem)),
+              draft
+                ? draft.outcomes[problemKey(problem)]
+                : outcomes.get(problemKey(problem)),
             );
             const started = examOutcomes.some(Boolean);
-            const firstOpen = problems.find((_, i) => !examOutcomes[i]);
-            // in progress: continue at the first problem not attempted yet
+            const current = problems.find(
+              (problem) => problemKey(problem) === draft?.currentTaskKey,
+            );
             const action =
-              started && firstOpen
+              draft && !draft.completed && current
                 ? {
                     label: 'Nadaljuj',
-                    path: `${problemPath(firstOpen)}?npz=${year}`,
+                    path: `${problemPath(current)}?npz=${year}`,
                   }
-                : { label: started ? 'Ponovi' : 'Začni', path: examPath(year) };
+                : {
+                    label: draft?.completed || started ? 'Ponovi' : 'Začni',
+                    path: examPath(year),
+                  };
             return (
               <div key={year} className={styles.row}>
                 <div className={styles.rowText}>
                   <span className={styles.rowTitle}>NPZ {year}</span>
                   <span className={list.muted}>{tasks(problems.length)}</span>
                 </div>
-                <ExamStatus outcomes={examOutcomes} total={problems.length} />
+                <ExamStatus
+                  outcomes={examOutcomes}
+                  total={problems.length}
+                  inProgress={Boolean(draft)}
+                  completed={Boolean(draft?.completed)}
+                />
                 <Button
                   variant={started ? 'primary' : 'secondary'}
                   onClick={() => navigate(action.path)}
