@@ -7,6 +7,12 @@ export default function Resources({ files }: { files: string[] }) {
   return (
     <div className={styles.resources}>
       {files.map((file) => (
+        file.endsWith('.svg') ? 
+          <object
+            key={file} 
+            data={`npz-resource://resources/${encodeURIComponent(file)}`}
+          />
+          :
         <img
           key={file}
           className={styles.image}

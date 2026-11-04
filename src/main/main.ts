@@ -139,7 +139,7 @@ ipcMain.handle('app:get-info', () => {
 ipcMain.handle(
   'problem:get-data',
   async (event, subject: string, year: number, id: number) => {
-    const filename = `${subject}-${year}-${id}.json`;
+    const filename = `${subject}-${year}-${String(id).padStart(2, '0')}.json`;
     const filepath = path.join(PROBLEMS_PATH, filename);
 
     if (fs.existsSync(filepath) === false) {

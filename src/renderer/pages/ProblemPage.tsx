@@ -104,7 +104,10 @@ function ProblemLoader({
     window.api
       .getProblemData(subject, year, id)
       .then(setProblem)
-      .catch(() => setError(true));
+      .catch((err) => {
+        console.error('Error loading problem data:', err);
+        setError(true);
+      })
   }, [subject, year, id]);
 
   if (error) {
