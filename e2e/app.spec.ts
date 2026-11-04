@@ -80,7 +80,7 @@ async function savedDraftState(key: string) {
 
 test('opens the main window with the navigation', async () => {
   await expect(page).toHaveTitle('BoljseZnam');
-  for (const item of ['Domov', 'Po poglavjih', 'Celoten NPZ', 'Zgodovina']) {
+  for (const item of ['Domov', 'Celoten NPZ', 'Zgodovina']) {
     await expect(
       page.getByRole('link', { name: item, exact: true }),
     ).toBeVisible();
@@ -88,7 +88,8 @@ test('opens the main window with the navigation', async () => {
 });
 
 test('loads the chapters from the data folder', async () => {
-  await page.getByRole('link', { name: 'Po poglavjih', exact: true }).click();
+  // The sidebar link is hidden for now; the page is still reachable.
+  await goTo('#/poglavja');
   await expect(page.getByText('Kisline, baze in soli').first()).toBeVisible();
 });
 
@@ -212,9 +213,10 @@ test('restores the same generated naming and equation problems', async () => {
 
 test('loads a problem image from data/resources', async () => {
   await goTo('#/naloga/test/1990/3');
-  const image = page.locator('img[src*="test-ph-lestvica.svg"]');
+  // SVG resources are embedded with <object>, other images with <img>.
+  const image = page.locator('object[data*="test-ph-lestvica.svg"]');
   await expect(image).toBeVisible();
-  expect(
-    await image.evaluate((img: HTMLImageElement) => img.naturalWidth),
-  ).toBeGreaterThan(0);
+  const box = await image.boundingBox();
+  expect(box?.width).toBeGreaterThan(0);
+  expect(box?.height).toBeGreaterThan(0);
 });

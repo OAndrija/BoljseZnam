@@ -7,8 +7,9 @@ const DATA = path.resolve(__dirname, '..', 'data');
 const PROBLEMS = path.join(DATA, 'problems');
 const RESOURCES = path.join(DATA, 'resources');
 
-// Same pattern as the main process: <subject>-<year>-<number>.json
-const FILENAME = /^([A-Za-z]+)-(\d+)-(\d+)\.json$/;
+// <subject>-<year>-<number>.json with a two-digit number (e.g. KEM-2022-05.json);
+// the main process pads the number when it opens a problem.
+const FILENAME = /^([A-Za-z]+)-(\d+)-(\d{2})\.json$/;
 const QUESTION_TYPES = ['multiple-choice', 'numeric', 'essay'];
 
 const readJson = <T>(file: string): T =>
@@ -72,7 +73,14 @@ describe('data/problems', () => {
       'question %d is well formed',
       (_index, question) => {
         expect(QUESTION_TYPES).toContain(question.type);
-        // expect(question.prompt.trim()).not.toBe('');
+        // The task text is either written in `prompt` or shown as an image
+        // (NPZ tasks imported by npzparse are rendered to SVG).
+        const hasPrompt = question.prompt.trim() !== '';
+        const hasResource = (question.resources ?? []).length > 0;
+        expect(
+          hasPrompt || hasResource,
+          'question needs a prompt or a resource',
+        ).toBe(true);
 
         if (question.type === 'multiple-choice') {
           expect(question.choices.length).toBeGreaterThanOrEqual(2);
