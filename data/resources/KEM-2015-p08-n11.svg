@@ -1,0 +1,66 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" viewBox="0 0 388.6135881708251 299.11198768424947" >
+    <rect stroke="none" fill="#ffffff" x="-59.30538" y="-83.324394" width="503.34097" height="922.46326" />
+    <text x="0.0" y="9.394043" xml:space="preserve" textLength="15.599574" lengthAdjust="spacingAndGlyphs" style="font-size: 10.8702px;">11.</text>
+    <text x="18.054005" y="9.394043" xml:space="preserve" textLength="354.2906" lengthAdjust="spacingAndGlyphs" style="font-size: 10.8702px;">Slika prikazuje poskus, s katerim ugotavljamo, kaj vpliva na rjavenje železnih žebljev.</text>
+    <text x="18.054005" y="23.320013" xml:space="preserve" textLength="226.53983" lengthAdjust="spacingAndGlyphs" style="font-size: 10.8702px;">Obkroži črko pod epruveto, v kateri žebelj najbolj rjavi.</text>
+    <path stroke="none" fill="#ff808080" d="M280.09763,129.00179 L302.016,129.00179 L302.016,143.1232 L280.09763,143.1232 Z " />
+    <path stroke="none" fill="#ff808080" d="M291.20724,232.97166 C297.30966,232.97166,302.25665,226.5798,302.25665,218.6951 L302.25665,145.76088 C302.25665,137.87617,297.30966,131.48431,291.20724,131.48431 C285.10483,131.48431,280.1578,137.87617,280.1578,145.76088 L280.1578,145.76088 L280.1578,218.6951 C280.1578,226.5798,285.10483,232.97166,291.20724,232.97166 " />
+    <text x="90.25589" y="121.13314" xml:space="preserve" textLength="17.607878" lengthAdjust="spacingAndGlyphs" style="font-size: 10.839312px;">zrak</text>
+    <text x="239.5174" y="121.13314" xml:space="preserve" textLength="17.607851" lengthAdjust="spacingAndGlyphs" style="font-size: 10.839312px;">zrak</text>
+    <text x="238.65048" y="208.29323" xml:space="preserve" textLength="20.208487" lengthAdjust="spacingAndGlyphs" style="font-size: 10.839312px;">voda</text>
+    <rect stroke="none" fill="#ff808080" x="209.19664" y="42.05721" width="21.005724" height="30.761261" />
+    <rect stroke="#000000" fill="none" x="209.19664" y="42.057278" width="21.005724" height="30.761261" />
+    <path stroke="#000000" fill="none" d="M208.1792,59.700916 L208.28088,218.55827 " />
+    <path stroke="#000000" fill="none" d="M231.0161,59.700985 L230.91441,218.55833 " />
+    <path stroke="#000000" fill="none" d="M208.63095,186.16977 L231.1626,186.30116 " />
+    <rect stroke="none" fill="#ff808080" x="60.018566" y="42.845013" width="21.158264" height="30.629938" />
+    <rect stroke="#000000" fill="none" x="60.018566" y="42.84508" width="21.158264" height="30.629938" />
+    <path stroke="#000000" fill="none" d="M59.10334,60.488388 L59.205025,219.34573 " />
+    <path stroke="#000000" fill="none" d="M81.889404,60.488453 L81.889404,219.34581 " />
+    <path stroke="none" fill="#ffffff" d="M71.24291,142.41684 L66.524055,229.89612 L75.194664,142.95387 L80.727005,143.70442 L81.2723,137.00049 L66.25587,134.96075 L65.71057,141.66548 Z " />
+    <path stroke="#000000" fill="none" d="M71.24291,142.4169 L66.524055,229.89618 L75.194664,142.95395 L80.727005,143.70448 L81.2723,137.00056 L66.25587,134.96082 L65.71057,141.66556 L71.24291,142.4169 Z " />
+    <path stroke="none" fill="#ffffff" d="M220.79446,142.1409 L216.0756,229.62018 L224.74625,142.67793 L230.27856,143.42848 L230.82388,136.72455 L215.80742,134.68481 L215.26213,141.38954 Z " />
+    <path stroke="#000000" fill="none" d="M220.79446,142.14096 L216.0756,229.62024 L224.74625,142.67801 L230.27856,143.42854 L230.82388,136.72462 L215.80742,134.68488 L215.26213,141.38962 L220.79446,142.14096 Z " />
+    <path stroke="#000000" fill="none" d="M74.11749,117.52108 L88.52955,117.52108 " />
+    <path stroke="#000000" fill="none" d="M221.84207,206.54225 L236.25415,206.54225 " />
+    <path stroke="#000000" fill="none" d="M222.7052,117.52121 L237.11726,117.52121 " />
+    <path stroke="#000000" fill="none" d="M59.195675,219.00662 C59.195675,226.89133,64.27678,233.28319,70.545074,233.28319 C76.81337,233.28319,81.89511,226.89133,81.89511,219.00662 " />
+    <path stroke="#000000" fill="none" d="M208.28943,218.6963 C208.28943,226.58101,213.35463,232.97287,219.60324,232.97287 C225.8512,232.97287,230.91638,226.58101,230.91638,218.6963 " />
+    <path stroke="#000000" fill="none" d="M231.01251,59.793232 C231.01251,56.022457,232.94836,52.965298,235.33607,52.965298 " />
+    <path stroke="#000000" fill="none" d="M202.93285,54.206894 C205.8417,54.21347,208.18619,56.71472,208.16904,59.793232 " />
+    <path stroke="#000000" fill="none" d="M81.8948,60.414062 C81.883354,56.648254,83.8084,53.591095,86.1942,53.58613 " />
+    <path stroke="#000000" fill="none" d="M53.88718,54.827724 C56.796036,54.834305,59.140526,57.335556,59.123367,60.414062 " />
+    <rect stroke="none" fill="#ff808080" x="134.02292" y="42.846157" width="21.056566" height="30.629938" />
+    <rect stroke="#000000" fill="none" x="134.02292" y="42.846222" width="21.056566" height="30.629938" />
+    <path stroke="#000000" fill="none" d="M133.00548,60.48953 L133.10716,219.34688 " />
+    <path stroke="#000000" fill="none" d="M155.8933,60.489594 L155.79161,219.34695 " />
+    <rect stroke="none" fill="#ff808080" x="133.05054" y="105.41598" width="22.785866" height="21.72527" />
+    <rect stroke="#000000" fill="none" x="133.05054" y="105.41604" width="22.785866" height="21.72527" />
+    <text x="165.75476" y="192.99965" xml:space="preserve" textLength="20.208487" lengthAdjust="spacingAndGlyphs" style="font-size: 10.839312px;">voda</text>
+    <path stroke="#000000" fill="none" d="M149.78127,190.38594 L164.19331,190.38594 " />
+    <path stroke="none" fill="#ffffff" d="M145.13068,142.1421 L140.41182,229.62138 L149.08243,142.67915 L154.61476,143.42969 L155.16006,136.72575 L140.14363,134.68602 L139.59833,141.39076 Z " />
+    <path stroke="#000000" fill="none" d="M145.13068,142.14217 L140.41182,229.62144 L149.08243,142.67921 L154.61476,143.42976 L155.16006,136.72583 L140.14363,134.68608 L139.59833,141.39082 L145.13068,142.14217 Z " />
+    <text x="164.55373" y="122.995766" xml:space="preserve" textLength="14.503903" lengthAdjust="spacingAndGlyphs" style="font-size: 10.839312px;">olje</text>
+    <path stroke="#000000" fill="none" d="M148.58023,121.046326 L162.99226,121.046326 " />
+    <path stroke="#000000" fill="none" d="M133.10596,219.1319 C133.10596,227.0166,138.18707,233.40848,144.45537,233.40848 C150.72366,233.40848,155.80539,227.0166,155.80539,219.1319 " />
+    <path stroke="#000000" fill="none" d="M155.90123,60.725388 C155.87898,56.964478,157.79323,53.90732,160.17711,53.89745 " />
+    <path stroke="#000000" fill="none" d="M127.74948,55.138912 C130.65834,55.145493,133.00282,57.646744,132.98567,60.72525 " />
+    <rect stroke="none" fill="#ff808080" x="280.66644" y="42.723896" width="21.056593" height="30.629938" />
+    <rect stroke="#000000" fill="none" x="280.66644" y="42.723896" width="21.056593" height="30.629938" />
+    <path stroke="#000000" fill="none" d="M279.64914,60.367268 L279.75082,219.22462 " />
+    <path stroke="#000000" fill="none" d="M302.537,60.367336 L302.4353,219.22469 " />
+    <path stroke="none" fill="#ffffff" d="M291.77432,142.01964 L287.0555,229.49892 L295.72614,142.55669 L301.25845,143.30724 L301.80374,136.6033 L286.7873,134.56355 L286.24203,141.2683 Z " />
+    <path stroke="#000000" fill="none" d="M291.77432,142.01971 L287.0555,229.499 L295.72614,142.55675 L301.25845,143.3073 L301.80374,136.60336 L286.7873,134.56363 L286.24203,141.26836 L291.77432,142.01971 Z " />
+    <text x="311.98477" y="185.06789" xml:space="preserve" textLength="14.503903" lengthAdjust="spacingAndGlyphs" style="font-size: 10.839312px;">olje</text>
+    <path stroke="#000000" fill="none" d="M296.01132,183.11865 L310.4234,183.11865 " />
+    <path stroke="#000000" fill="none" d="M279.7496,219.0095 C279.7496,226.89421,284.83072,233.28607,291.09903,233.28607 C297.3673,233.28607,302.44904,226.89421,302.44904,219.0095 " />
+    <path stroke="#000000" fill="none" d="M302.54486,60.602924 C302.5226,56.84202,304.43683,53.78486,306.82074,53.77499 " />
+    <path stroke="#000000" fill="none" d="M274.39307,55.016586 C277.3019,55.023163,279.64642,57.524414,279.62924,60.602924 " />
+    <path stroke="#000000" fill="none" d="M279.94138,128.56325 L302.473,128.69463 " />
+    <path stroke="none" fill="#ffffff" d="M281.89948,231.50052 C281.89948,230.12921,281.20038,229.01733,280.33792,229.01733 C279.47617,229.01733,278.77707,230.12921,278.77707,231.50052 C278.77707,232.87183,279.47617,233.98372,280.33792,233.98372 C281.20038,233.98372,281.89948,232.87183,281.89948,231.50052 " />
+    <text x="67.71297" y="269.07193" xml:space="preserve" textLength="6.217285" lengthAdjust="spacingAndGlyphs" style="font-size: 10.839312px;">A</text>
+    <text x="141.27643" y="268.00006" xml:space="preserve" textLength="6.217285" lengthAdjust="spacingAndGlyphs" style="font-size: 10.839312px;">B</text>
+    <text x="216.38722" y="267.69894" xml:space="preserve" textLength="6.7299623" lengthAdjust="spacingAndGlyphs" style="font-size: 10.839312px;">C</text>
+    <text x="289.04654" y="267.69894" xml:space="preserve" textLength="6.7299623" lengthAdjust="spacingAndGlyphs" style="font-size: 10.839312px;">D</text>
+    <text x="349.656" y="296.428" xml:space="preserve" textLength="38.957565" lengthAdjust="spacingAndGlyphs" style="font-size: 10.8702px;">(1 točka)</text>
+</svg>
