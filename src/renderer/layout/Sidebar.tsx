@@ -8,7 +8,7 @@ import styles from './Sidebar.module.css';
 
 const navItems = [
   { to: '/', label: 'Domov' },
-  { to: '/poglavja', label: 'Po poglavjih' },
+  // { to: '/poglavja', label: 'Po poglavjih' },
   { to: '/npz', label: 'Celoten NPZ' },
   { to: '/spojine', label: 'Poimenuj spojine' },
   { to: '/reakcije', label: 'Urejanje reakcij' },
