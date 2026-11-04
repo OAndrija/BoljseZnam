@@ -1,0 +1,18 @@
+{
+    "subject": "KEM",
+    "year": 2018,
+    "id": 1,
+    "categories": [],
+    "prompt": "",
+    "resources": [],
+    "questions": [
+        {
+            "type": "essay",
+            "prompt": "",
+            "resources": [
+                "KEM-2018-01.svg"
+            ],
+            "answer": "• D"
+        }
+    ]
+}

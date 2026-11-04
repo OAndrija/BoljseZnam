@@ -1,0 +1,18 @@
+{
+    "subject": "KEM",
+    "year": 2015,
+    "id": 16,
+    "categories": [],
+    "prompt": "",
+    "resources": [],
+    "questions": [
+        {
+            "type": "essay",
+            "prompt": "",
+            "resources": [
+                "KEM-2015-16.svg"
+            ],
+            "answer": "16.1 - • aluminij (Al)\n16.2 - • ogljik (C)\n16.3 - • helij (He)"
+        }
+    ]
+}

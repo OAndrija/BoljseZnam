@@ -11,7 +11,31 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 
-fun getAnswerMap(): Map<String, List<Answer>> {
+private val JSON = Json {
+    encodeDefaults = true
+    prettyPrint = true
+}
+
+@Serializable
+private data class Problem(
+    val subject: String = "KEM",
+    val year: Int,
+    val id: Int,
+    val categories: List<String> = emptyList(),
+    val prompt: String = "",
+    val resources: List<String> = emptyList(),
+    val questions: List<Question>,
+)
+
+@Serializable
+private data class Question(
+    val type: String = "essay",
+    val prompt: String = "",
+    val resources: List<String>,
+    val answer: String?,
+)
+
+private fun getAnswerMap(): Map<String, List<Answer>> {
     val input = Path.of("data/input/npz-answers").also { it.createDirectories() }
     return buildMap {
         input.listDirectoryEntries("N*.pdf").forEach { file ->
@@ -19,12 +43,6 @@ fun getAnswerMap(): Map<String, List<Answer>> {
         }
     }
 }
-
-@Serializable
-data class Question(
-    val type: String = "essay", val prompt: String? = null, val resources: List<String>,
-    val answer: String?
-)
 
 fun main() {
     val answerMap = getAnswerMap()
@@ -36,17 +54,18 @@ fun main() {
     output.resolve("resources").createDirectories()
     output.resolve("problems").createDirectories()
 
+
     input.listDirectoryEntries("N*.pdf").forEach { file ->
         Loader.loadPDF(file.toFile()).use { pdf ->
+            val year = 2000 + file.name.substring(1, 3).toInt()
+
             val tasks = Task.extractAll(pdf)
             println("Extracted ${tasks.size} tasks from $file")
 
             val answers = answerMap[file.name.substring(1, 4)] ?: emptyList()
 
             tasks.forEach { task ->
-                val name = "KEM-20${file.name.substring(1, 3)}-p${"%02d".format(task.page)}-n${
-                    "%02d".format(task.number)
-                }"
+                val name = "KEM-$year-${"%02d".format(task.number)}"
                 Files.writeString(output.resolve("resources").resolve("$name.svg"), task.toSVG())
 
                 val taskAnswers = answers.filter {
@@ -56,14 +75,20 @@ fun main() {
                 }
 
                 Files.writeString(
-                    output.resolve("problems").resolve("$name.json"), Json.encodeToString(
-                        Question(
-                            resources = listOf("resources/$name.svg"),
-                            answer = when (taskAnswers.size) {
-                                0 -> null
-                                1 -> taskAnswers.first().answer
-                                else -> taskAnswers.joinToString("\n") { "${it.task} - ${it.answer}" }
-                            },
+                    output.resolve("problems").resolve("$name.json"), JSON.encodeToString(
+                        Problem(
+                            year = year,
+                            id = task.number,
+                            questions = listOf(
+                                Question(
+                                    resources = listOf("$name.svg"),
+                                    answer = when (taskAnswers.size) {
+                                        0 -> null
+                                        1 -> taskAnswers.first().answer
+                                        else -> taskAnswers.joinToString("\n") { "${it.task} - ${it.answer}" }
+                                    },
+                                )
+                            ),
                         )))
             }
         }

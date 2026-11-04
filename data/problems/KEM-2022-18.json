@@ -1,0 +1,18 @@
+{
+    "subject": "KEM",
+    "year": 2022,
+    "id": 18,
+    "categories": [],
+    "prompt": "",
+    "resources": [],
+    "questions": [
+        {
+            "type": "essay",
+            "prompt": "",
+            "resources": [
+                "KEM-2022-18.svg"
+            ],
+            "answer": "18.a - Eden od:\n• od 0 do 7\n• manjša od 7 oz. zapis z znakom < 7\n• manjša ali enaka 7 oz. zapis z znakom ≤ 7\n18.b - • Snov je bazična, ker je rdeč lakmusov papir\npomodrel.\n18.c - • snov 2"
+        }
+    ]
+}

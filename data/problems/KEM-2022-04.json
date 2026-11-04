@@ -1,0 +1,18 @@
+{
+    "subject": "KEM",
+    "year": 2022,
+    "id": 4,
+    "categories": [],
+    "prompt": "",
+    "resources": [],
+    "questions": [
+        {
+            "type": "essay",
+            "prompt": "",
+            "resources": [
+                "KEM-2022-04.svg"
+            ],
+            "answer": "• D"
+        }
+    ]
+}
